@@ -14,24 +14,6 @@ var teachers = [
 	}
 ];
 
-// function errorHandler(_class, _obj, _code) {
-// 	switch(_class) {
-// 		case 0: _class = '0'; break;
-// 		case 1: _class = '1'; break;
-// 		case 2: _class = '2'; break;
-// 		case 3: _class = '3'; break;
-// 	}
-// 	switch(_code) {
-// 		case 0: return _class + ': Object is already exists';
-// 		case 1: return _class + ': Object is added';
-// 		case 2: return _class + ': Object is edited';
-// 		case 3: return _class + ': Object is deleted';
-// 		case 4: return _class + ': Object does not exists';
-// 		case 5: return _class + ': ';
-// 		default: return _class + ': ';
-// 	}
-// }
-
 var lectures = [
 	{
 		"name": "Параллельные и распределенные вычисления",
@@ -90,8 +72,7 @@ var schools = [
 
 function isLocalStorageAvailable() {
 	try {
-		ls = 'localStorage';
-		var storage = window[ls], x = "Test";
+		var storage = window.localStorage, x = "Test";
 		storage.setItem(x, x);
 		storage.removeItem(x);
 		return true;
@@ -107,17 +88,59 @@ class sync {
 		this.value = value;
 	}
 }
-
-function findSchool(value, num) {
-	var output = [];
-	if(0 < value.length && value.length <= num) {
-		for(var i = 0; i < value.length; i++) {
-			for(var j = 0; j < schools.length; j++) {
-				if(value[i] == schools[j].name) {
-					output.push(value[i]);
-				}
+// Функция проверяет, существует ли заданное значение в массиве teachers.
+function findTeacher(value, returnType) {
+	let i;
+	if(returnType) {
+		for(i = 0; i < teachers.length; i++) {
+			if(value == teachers[i].name) {
+				return teachers[i];
 			}
 		}
+		return false;
+	}
+	else {
+		for(i = 0; i < teachers.length; i++) {
+			if(value == teachers[i].name) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+// Функция проверяет, существует ли заданное значение в массиве lectures.
+function findLecture(value, returnType) {
+	let i;
+	if(returnType) {
+		for(i = 0; i < lectures.length; i++) {
+			if(value == lectures[i].name) {
+				return lectures[i];
+			}
+		}
+		return false;
+	}
+	else {
+		for(i = 0; i < lectures.length; i++) {
+			if(value == lectures[i].name) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+// Функция проверяет, существуют ли заданные школы (value), а так же учитывает количество школ для лекции (num).
+function findSchools(value, num) {
+	var output = [];
+	for(var i = 0; i < value.length; i++) {
+		for(var j = 0; j < schools.length; j++) {
+			if(value[i] == schools[j].name) {
+				output.push(value[i]);
+			}
+		}
+	}
+	if(0 < output.length && output.length <= num) {
 		return output;
 	}
 	else {
@@ -125,31 +148,100 @@ function findSchool(value, num) {
 	}
 }
 
-function exceedsCapacity(s_value, a_value, num) {
-	var s_temp = 0;
-	var a_temp = 0;
-	if(0 < s_value.length && s_value.length <= num) {
-		for(var i = 0; i < s_value.length; i++) {
-			for(var j = 0; j < schools.length; j++) {
-				if(s_value[i] == schools[j].name) {
-					//s_temp.push(schools[j].students);
-					s_temp = s_temp + schools[j].students;
-				}
+// Функция проверяет, существует ли заданное значение в массиве schools.
+function findSchool(value, returnType) {
+	let i;
+	if(returnType) {
+		for(i = 0; i < schools.length; i++) {
+			if(value == schools[i].name) {
+				return schools[i];
 			}
 		}
-		for(var i = 0; i < auditoriums.length; i++) {
-			if(a_value == auditoriums[i].name) {
-				a_temp = auditoriums[i].capacity;
+		return false;
+	}
+	else {
+		for(i = 0; i < schools.length; i++) {
+			if(value == schools[i].name) {
+				return true;
 			}
 		}
+		return false;
+	}
+}
 
-		if(s_temp <= a_temp) {
-			return true;
+// Функция проверяет, существует ли заданное значение в массиве auditoriums.
+function findAuditorium(value, returnType) {
+	let i;
+	if(returnType) {
+		for(i = 0; i < auditoriums.length; i++) {
+			if(value == auditoriums[i].name) {
+				return auditoriums[i];
+			}
 		}
-		else {
-			return false;
+		return false;
+	}
+	else {
+		for(i = 0; i < auditoriums.length; i++) {
+			if(value == auditoriums[i].name) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+// Что? Многие find функции можно было упаковать в одну? – Ну конечно! Только я до этого додумался слишком поздно, отрефакторим.
+
+// Вот она!
+function find(value, array, returnType) {
+	let i;
+	if(returnType) {
+		for(i = 0; i < array.length; i++) {
+			if(value == array[i].name) {
+				return array[i];
+			}
+		}
+		return false;
+	}
+	else {
+		for(i = 0; i < array.length; i++) {
+			if(value == array[i].name) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+// Функция проверяет, вместятся ли студенты заданных школ (s_value) в заданную аудиторию (a_value).
+function exceedsCapacity(s_value, a_value) {
+	let s_temp = 0;
+	let a_temp = 0;
+	let i, j;
+
+	for(i = 0; i < s_value.length; i++) {
+		for(j = 0; j < schools.length; j++) {
+			if(s_value[i] == schools[j].name) {
+				s_temp = s_temp + schools[j].students;
+			}
 		}
 	}
+	for(i = 0; i < auditoriums.length; i++) {
+		if(a_value == auditoriums[i].name) {
+			a_temp = auditoriums[i].capacity;
+		}
+	}
+
+	if(s_temp <= a_temp) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+// Функция проверяет, могут ли существовать 2 объекта в заданный промежуток времени.
+function checkTime(lecture, schools, start, end) {
 }
 
 // В принципе, все это можно было реализовать через геттеры и сеттеры, но я решил сделать "немного нагляднее". :)
@@ -161,38 +253,39 @@ class Teacher {
 	// Метод добавления нового объекта Teacher в хранилище.
 	add(name) {
 		console.log('Teacher.add(' + name + ')');
-		// Перебираем массив teachers и ищем подходящее значение.
-		for(var i = 0; i < teachers.length; i++) {
-			if(name == teachers[i].name) {
-				// Если данный объект Teacher существует, то выводим соответствующее сообщение.
-				console.info('Teacher ' + name + ' is already exists');
-				break;
-			}
-			else {
-				// Если нет такого объекта, добавляем в конец массива новый объект Teacher.
-				teachers.push({"name": name});
-				console.info('Teacher ' + name + ' added');
-				break;
-			}
+		if(findTeacher(name)) {
+			// Если данный объект Teacher существует, то выводим соответствующее сообщение.
+			console.info('Teacher ' + name + ' is already exists');
+		}
+		else {
+			// Если нет такого объекта, добавляем в конец массива новый объект Teacher.
+			teachers.push({"name": name});
+			console.info('Teacher ' + name + ' added');
 		}
 		//syncEngine.add('teachers', name);
 	}
 	// Метод изменения объекта Teacher.
 	edit(name, value) {
 		console.log('Teacher.edit(' + name + ', ' + value + ')');
-		for(var i = 0; i < teachers.length; i++) {
-			if(name == teachers[i].name) {
-				teachers[i].name = value;
-				console.info('Teacher ' + name + ' edited to ' + value);
-				break;
+		if(findTeacher(name)) {
+			if(findTeacher(value)) {
+				console.info('Teacher ' + value + ' is already exists');
 			}
+			else {
+				let teacher = findTeacher(name, 1);
+				teacher.name = value;
+				console.info('Teacher ' + name + ' edited to ' + value);
+			}
+		}
+		else {
+			console.info('Teacher ' + name + ' is not exists');
 		}
 		//syncEngine.edit('teachers', name);
 	}
 	// Метод удаления объекта Teacher из хранилища.
 	del(name) {
 		console.log('Teacher.delete(' + name + ')');
-		for(var i = 0; i < teachers.length; i++) {
+		for(let i = 0; i < teachers.length; i++) {
 			if(name == teachers[i].name) {
 				// Если существует такой объект, то удаляем его.
 				delete teachers[i];
@@ -220,90 +313,82 @@ class Lecture {
 		// Разбираем строку школ на элементы массива.
 		input_schools = input_schools.split(', ');
 
-		for(var i = 0; i < teachers.length; i++) {
-			if(name == lectures[i].name) {
-				console.info('Lecture ' + name + ' is already exists');
-				break;
+		// Ищем лекцию по названию, если существует, выводим соответствующее сообщение.
+		if(findLecture(name)) {
+			console.info('Lecture ' + name + ' is already exists');
+		}
+		else {
+			// Иначе начинаем работать со школами для новой лекции и проверяем, есть ли валидные школы и не больше их 2.
+			if(findSchools(input_schools, 2)) {
+				// Тут мы проверяем, вместится ли в заданной аудитории количество студентов заданных школ (заданной школы).
+				if(exceedsCapacity(findSchools(input_schools, 2), auditorium)) {
+					// Если все в порядке, вносим новую лекцию в хранилище.
+					lectures.push({"name": name, "teacher": teacher, "auditorium": auditorium, "schools": findSchools(input_schools, 2)});
+				}
+				else {
+					// Если количество студентов школ превышает вместимость аудитории, выводим соответствующее сообщение.
+					console.error('Auditorium ' + auditorium + ' needs more capacity');
+				}
 			}
-			// else {
-			// 	if(1 <= input_schools.length && input_schools.length <= 2) {
-			// 		//
-			// 		for(var j = 0; j < input_schools.length; j++) {
-			// 			for(var k = 0; k < schools.length; k++) {
-			// 				if(input_schools[j] == schools[k].name) {
-			// 					// ALILUYA
-			// 					break;
-			// 				}
-			// 				else {
-			// 					console.error('Inputted school ' + input_school[i] + ' is not exists');
-			// 					break;
-			// 				}
-			// 			}
-			// 		}
-			// 		//
-			// 		for(var j = 0; j < auditoriums.length; j++) {
-			// 			if(auditorium == auditoriums[j].name) {
-			// 				console.log('OK!');
-			// 				if(input_schools[0] == schools[j].name) {
-			// 					// ok
-			// 					console.info('suspect');
-			// 					break;
-			// 				}
-			// 				else {
-			// 					console.error('School ' + input_schools[i] + ' is not exists');
-			// 					break;
-			// 				}
-			// 			}
-			// 			else {
-			// 				console.error('Auditorium ' + auditorium + ' is not exists');
-			// 				break;
-			// 			}
-			// 		}
-			// 	}
-			// 	else {
-			// 		console.error('Lecture ' + name + ' can\'t have more 2 schools');
-			// 		break;
-			// 	}
-			// }
+			else {
+				// Если не существует заданных школ или их количество превышает 2, выводим соответствующее сообщение.
+				console.error('Schools ' + input_schools + ' is not exists');
+			}
 		}
 		//syncEngine.add('lectures', value);
 	}
 	edit(name, arg, value) {
 		console.log('Lecture.edit(' + name + ', ' + arg + ', ' + value + ')');
-		for(var i = 0; i < lectures.length; i++) {
-			if(name == lectures[i].name) {
-				if(arg == 'name') {
-					lectures[i].name = value;
-					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'teacher') {
-					lectures[i].teacher = value;
-					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'auditorium') {
-					lectures[i].auditorium = value;
-					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'schools') {
-					lectures[i].schools = value;
-					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
+		if(findLecture(name)) {
+			let lecture = findLecture(name, 1);
+			/* Знаю, что конструкция немного громоздкая и можно было бы, например, реализовать через
+			if(arg == 'name ' || arg == 'teacher') : lecture[arg] = value ? return false;
+			Возможно, я отрефакторю код до того момента, когда вы на него взглянете. */
+			if(arg == 'name') {
+				if(findLecture(value)) {
+					console.info('Lecture ' + value + ' is already exists');
 				}
 				else {
-					// ...
-					console.error('Lecture ' + name + 'doesn\'t have an argument ' + arg);
-					break;
+					lecture.name = value;
+					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
 				}
+			}
+			else if(arg == 'teacher') {
+				if(lecture.teacher == value) {
+					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					lecture.teacher = value;
+					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else if(arg == 'auditorium') {
+				if(lecture.auditorium == value) {
+					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					lecture.auditorium = value;
+					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else if(arg == 'schools') {
+				if(lecture.schools == value) {
+					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					lecture.schools = value;
+					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else {
+				console.error('Lecture ' + name + 'doesn\'t have an argument ' + arg);
 			}
 		}
 		//syncEngine.edit('lectures', name);
 	}
 	del(name) {
 		console.log('Lecture.delete(' + name + ')');
-		for(var i = 0; i < lectures.length; i++) {
+		for(let i = 0; i < lectures.length; i++) {
 			if(name == lectures[i].name) {
 				delete lectures[i];
 				console.info('Lecture ' + name + ' deleted');
@@ -321,41 +406,47 @@ class School {
 		this.students = students;
 	}
 	add(name, students) {
-		for(var i = 0; i < schools.length; i++) {
-			if(name == schools[i].name) {
-				console.info('School ' + name + ' is already exists');
-				break;
-			}
-			else {
-				schools.push({"name": name, "students": students});
-				console.info('School ' + name + ' added, quantity of students: ' + students);
-				break;
-			}
+		console.log('School.add(' + name + ', ' + students + ')');
+		if(findSchool(name)) {
+			console.info('School ' + name + ' is already exists');
+		}
+		else {
+			schools.push({"name": name, "students": students});
+			console.info('School ' + name + ' added, quantity of students: ' + students);
 		}
 		//syncEngine.add('school', name);
 	}
 	edit(name, arg, value) {
-		for(var i = 0; i < schools.length; i++) {
-			if(name == schools[i].name) {
-				if(arg == 'students') {
-					schools[i].students = value;
-					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'name') {
-					schools[i].name = value;
-					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
+		console.log('School.edit(' + name + ', ' + arg + ', ' + value + ')');
+		if(findSchool(name)) {
+			let school = findSchool(name, 1);
+			if(arg == 'name') {
+				if(findSchool(value)) {
+					console.info('School ' + value + ' is already exists');
 				}
 				else {
-					console.error('School ' + name + 'doesn\'t have an argument ' + arg);
+					school.name = value;
+					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
 				}
+			}
+			else if(arg == 'students') {
+				if(school.students == value) {
+					console.info('School ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					school.students = value;
+					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else {
+				console.error('School ' + name + 'doesn\'t have an argument ' + arg);
 			}
 		}
 		//syncEngine.edit('school', name);
 	}
 	del(name) {
-		for(var i = 0; i < schools.length; i++) {
+		console.log('School.del(' + name + ')');
+		for(let i = 0; i < schools.length; i++) {
 			if(name == schools[i].name) {
 				delete schools[i];
 				console.info('School ' + name + ' deleted');
@@ -374,47 +465,56 @@ class Auditorium {
 		this.location = location;
 	}
 	add(name, capacity, location) {
-		for(var i = 0; i < auditoriums.length; i++) {
-			if(name == auditoriums[i].name) {
-				console.info('Auditorium ' + name + ' is already exists');
-				break;
-			}
-			else {
-				auditoriums.push({"name": name, "capacity": capacity, "location": location});
-				console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
-				break;
-			}
+		console.log('Auditorium.add(' + name + ', ' + capacity + ', ' + location + ')');
+		if(findAuditorium(name)) {
+			console.info('Auditorium ' + name + ' is already exists');
+		}
+		else {
+			auditoriums.push({"name": name, "capacity": capacity, "location": location});
+			console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
 		}
 		//syncEngine.add('auditoriums', name);
 	}
 	edit(name, arg, value) {
-		for(var i = 0; i < auditoriums.length; i++) {
-			if(name == auditoriums[i].name) {
-				if(arg == 'name') {
-					auditoriums[i].name = value;
-					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'capacity') {
-					auditoriums[i].capacity = value;
-					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
-				}
-				else if(arg == 'location') {
-					auditoriums[i].location = value;
-					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
-					break;
+		console.log('Auditorium.edit(' + name + ', ' + arg + ', ' + value + ')');
+		if(findAuditorium(name)) {
+			let auditorium = findAuditorium(name, 1);
+			if(arg == 'name') {
+				if(findAuditorium(value)) {
+					console.info('Auditorium ' + value + ' is already exists');
 				}
 				else {
-					console.error('Auditorium ' + name + 'doesn\'t have an argument ' + arg);
-					break;
+					auditorium.name = value;
+					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
 				}
+			}
+			else if(arg == 'capacity') {
+				if(auditorium.capacity == value) {
+					console.info('Auditorium ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					auditorium.capacity = value;
+					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else if(arg == 'location') {
+				if(auditorium.location == value) {
+					console.info('Auditorium ' + name + ' in arg ' + arg + ' have ' + value);
+				}
+				else {
+					auditorium.location = value;
+					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+				}
+			}
+			else {
+				console.error('Auditorium ' + name + 'doesn\'t have an argument ' + arg);
 			}
 		}
 		//syncEngine.edit('auditoriums', name);
 	}
 	del(name) {
-		for(var i = 0; i < auditoriums.length; i++) {
+		console.log('Auditorium.del(' + name + ')');
+		for(let i = 0; i < auditoriums.length; i++) {
 			if(name == auditoriums[i].name) {
 				delete auditoriums[i];
 				console.info('Auditorium ' + name + ' deleted');
@@ -429,38 +529,45 @@ class Auditorium {
 var syncEngine = new sync();
 
 //var lecture = new Lecture();
-
-//lecture.add();
-
-var lecture = new Lecture();
+//var teacher = new Teacher();
+//var school = new School();
+//var auditor = new Auditorium();
 
 function TestAPI(entryPoint) {
 	if(entryPoint == "Teacher") {
-		let user = new Teacher();
+		let teacher = new Teacher();
 
-		user.add('Терентьев');
-		user.add('Ожогов');
-		user.edit('Ожогов', 'Свободная');
-		user.del('Терентьев');
+		teacher.add('Терентьев');
+		teacher.add('Ожогов');
+		teacher.edit('Ожогов', 'Трофимов');
+		teacher.edit('Ожогов', 'Свободная');
+		teacher.del('Терентьев');
 	}
 	else if(entryPoint == "Lecture") {
-		//let lecture = new Lecture();
+		let lecture = new Lecture();
+
+		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', 'Школа мобильной разработки');
+		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', 'Школа менеджмента');
+		lecture.edit('Управление подразделениями', 'name', 'Управление персоналом');
+		lecture.del('Параллельные вычисления');
 	}
 	else if(entryPoint == "School") {
 		let school = new School();
 
-		school.add('Trololo', 100);
-		school.add('Epic', 25);
-		school.edit('Trololo', 'name', 'Apex');
-		school.del('Epic');
+		school.add('Школа обработки данных', 100);
+		school.add('Школа обработки информации', 25);
+		school.edit('Школа обработки данных', 'name', 'APEX');
+		school.del('Школа обработки информации');
 	}
 	else if(entryPoint == "Auditorium") {
 		let auditorium = new Auditorium();
 
-		auditorium.add('EntryPoint', 100, 'Google HQ');
-		auditorium.add('JS', 50, 'Google HQ');
-		auditorium.edit('JS', 'name', 'Stonebank');
-		auditorium.del('EntryPoint');
+		auditorium.add('Точка входа', 100, 'Google HQ');
+		auditorium.add('V8', 50, 'Google HQ');
+		auditorium.edit('V8', 'name', 'Мобилизация');
+		auditorium.edit('V8', 'capacity', 100);
+		auditorium.edit('V8', 'location', 'Yandex');
+		auditorium.del('Точка входа');
 	}
 	else {
 		console.error('TestAPI: Invalid entryPoint value');
