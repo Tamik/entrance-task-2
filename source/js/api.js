@@ -1,6 +1,5 @@
 /* jshint esversion: 6 */
 
-var teachers, lectures, schools, auditoriums;
 /*
  * ВСТУПЛЕНИЕ.
  */
@@ -275,115 +274,6 @@ function compareSchools(s1, s2) {
 }
 
 /*
- * Функция сравнивает 2 заданных значения (l1, l2 | лекции). При нахождении двух одинаковых значений и при пересечении временных промежутков возвращает false.
- * @param {string} l1
- * @param {string} l2
- * @returns {boolean}
- */
-
-/*
-function compareLections(l1, l2) {
-	l1 = find(l1, lectures, true);
-	l2 = find(l2, lectures, true);
-
-	if(l1.name != l2.name) {
-		if(l1.teacher == l2.teacher) {
-			if(compareTime(l1.time, l2.time)) {
-				console.error('Teacher ' + l1.teacher + ' busy at this time');
-				return false;
-			}
-		}
-		else if(l1.auditorium == l2.auditorium) {
-			if(compareTime(l1.time, l2.time)) {
-				console.error('Auditorium ' + l1.auditorium + ' busy at this time');
-				return false;
-			}
-		}
-		else if(compareSchools(l1.schools, l2.schools)) {
-			if(compareTime(l1.time, l2.time)) {
-				console.error('School has more than 1 lecture at this time');
-				return false;
-			}
-		}
-	}
-	return true;
-}
-*/
-
-/*
- * @param {Object} l1
- * @param {Object} l2
- * @returns {boolean}
- */
-
-/*
-function compareLections(l1, l2) {
-	if(l1.name != l2.name) {
-		if(l1.teacher == l2.teacher) {
-			if(compareTime(l1.time, l2.time)) {
-				return false;
-			}
-		}
-		else if(l1.auditorium == l2.auditorium) {
-			if(compareTime(l1.time, l2.time)) {
-				return false;
-			}
-		}
-		else if(compareSchools(l1.schools, l2.schools)) {
-			if(compareTime(l1.time, l2.time)) {
-				return false;
-			}
-		}
-	}
-	return true;
-}
-*/
-
-/*
-function compareLec(l1) {
-	let i;
-
-	for(i = 0; i < lectures.length; i++) {
-		console.log('I = ' + i);
-		if(l1.name != lectures[i].name) {
-			if(l1.teacher == lectures[i].teacher) {
-				if(compareTime(l1.time, lectures[i].time)) {
-					console.error('teacher');
-					return false;
-				}
-			}
-			else if(l1.auditorium == lectures[i].auditorium) {
-				if(compareTime(l1.time, lectures[i].time)) {
-					console.error('auditorium');
-					return false;
-				}
-			}
-			else if(compareSchools(l1.schools, lectures[i].schools)) {
-				if(compareTime(l1.time, lectures[i].time)) {
-					console.error('schools');
-					return false;
-				}
-			}
-		}
-	}
-	console.info('true');
-	return true;
-	// !compareLec();
-}
-*/
-
-/*
-function res(t) {
-	if(t == 1) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-*/
-
-/*
  * Функция сравнивает объект lecture со всеми существующими объектами lecture.
  * @param {Object} lecture
  * @returns {boolean}
@@ -422,6 +312,7 @@ class Teacher {
 	/*
 	 * Метод добавления нового объекта Teacher.
 	 * @param {string} name
+	 * @returns {boolean}
 	 */
 	add(name) {
 		console.log('Teacher.add(' + name + ')');
@@ -429,11 +320,13 @@ class Teacher {
 		if(find(name, teachers)) {
 			// Если такой объект существует, то выводим соответствующее сообщение.
 			console.error('Teacher ' + name + ' is already exists');
+			return false;
 		}
 		else {
 			// Если такой объект не существует, добавляем его.
 			teachers.push({"name": name});
 			console.info('Teacher ' + name + ' added');
+			return true;
 		}
 		//syncEngine.add('teachers', name);
 	}
@@ -441,6 +334,7 @@ class Teacher {
 	 * Метод изменения объекта Teacher.
 	 * @param {string} name
 	 * @param {string} value
+	 * @returns {boolean}
 	 */
 	edit(name, value) {
 		console.log('Teacher.edit(' + name + ', ' + value + ')');
@@ -449,39 +343,47 @@ class Teacher {
 			// Проверка, существует ли такой учитель по значению value.
 			if(find(value, teachers)) {
 				console.error('Teacher ' + value + ' is already exists');
+				return false;
 			}
 			else {
 				// Если заданное значение не пересекается с существующими объектами Teacher, то берем заданный объект на вооружение и изменяем его значение.
 				let teacher = find(name, teachers, true);
 				teacher.name = value;
 				console.info('Teacher ' + name + ' edited to ' + value);
+				return true;
 			}
 		}
 		else {
 			// Если подобного объекта Teacher не существует, выводим соответствующее сообщение.
 			console.error('Teacher ' + name + ' is not exists');
+			return false;
 		}
 		//syncEngine.edit('teachers', name);
 	}
 	/*
 	 * Метод удаления объекта Teacher.
 	 * @param {string} name
+	 * @returns {boolean}
 	 */
 	del(name) {
 		console.log('Teacher.delete(' + name + ')');
-		// Перебираем массив teachers
-		for(let i = 0; i < teachers.length; i++) {
-			// Проверяем, совпадает ли заданное значение со значениями объектов Teacher.
-			if(name == teachers[i].name) {
-				// Если существует такой объект, то удаляем его.
-				delete teachers[i];
-				// После delete teachers[i] в массиве teachers появляется значение undefined.
-				console.info('Teacher ' + name + ' deleted');
-				break;
+		if(find(name, teachers)) {
+			// Перебираем массив teachers
+			for(let i = 0; i < teachers.length; i++) {
+				// Проверяем, совпадает ли заданное значение со значениями объектов Teacher.
+				if(name == teachers[i].name) {
+					// Если существует такой объект, то удаляем его.
+					delete teachers[i];
+					// После delete teachers[i] в массиве teachers появляется значение undefined.
+					console.info('Teacher ' + name + ' deleted');
+					break;
+				}
 			}
+			// Фильтруем массив минуя значения undefined (которые появляются после delete teachers[i]).
+			teachers = teachers.filter(function(a) { return a !== undefined; });
+			return true;
 		}
-		// Фильтруем массив минуя значения undefined (которые появляются после delete teachers[i]).
-		teachers = teachers.filter(function(a) { return a !== undefined; });
+		return false;
 		//syncEngine.del('teachers', name);
 	}
 	/*
@@ -526,6 +428,7 @@ class Lecture {
 	 * @param {string} auditorium
 	 * @param {string} time
 	 * @param {string} input_schools
+	 * @returns {boolean}
 	 */
 	add(name, teacher, auditorium, time, input_schools) {
 		console.log('Lecture.add(' + name + ', ' + teacher + ', ' + auditorium + ', ' + time + ', ' + input_schools + ')');
@@ -545,15 +448,19 @@ class Lecture {
 				if(!exceedsCapacity(findSchools(input_schools, 2), auditorium)) {
 					if(!compareLectures(lecture)) {
 						lectures.push(lecture);
+						return true;
 					}
 					else {
 						console.error('ERROR.');
+						return false;
 					}
 				}
 				else {
 					console.log('Exceeds capacity in auditorium ' + auditorium);
+					return false;
 				}
 			}
+			return false;
 		}
 		//syncEngine.add('lectures', value);
 	}
@@ -561,6 +468,7 @@ class Lecture {
 	 * @param {string} name
 	 * @param {string} arg
 	 * @param {string} value
+	 * @returns {boolean}
 	 */
 	edit(name, arg, value) {
 		console.log('Lecture.edit(' + name + ', ' + arg + ', ' + value + ')');
@@ -572,34 +480,42 @@ class Lecture {
 			if(arg == 'name') {
 				if(find(value, lectures)) {
 					console.info('Lecture ' + value + ' is already exists');
+					return false;
 				}
 				else {
 					lecture.name = value;
 					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 				}
 			}
 			else if(arg == 'teacher') {
 				if(lecture.teacher == value) {
 					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					if(!compareLectures(lecture)) {
 						lecture.teacher = value;
 						console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+						return true;
 					}
 				}
 			}
 			else if(arg == 'auditorium') {
 				if(lecture.auditorium == value) {
 					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					if(!exceedsCapacity(lecture.schools, 2)) {
 						if(!compareLectures(lecture)) {
 							lecture.auditorium = value;
 							console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+							return true;
 						}
+						return false;
 					}
+					return false;
 				}
 			}
 			else if(arg == 'schools') {
@@ -607,35 +523,45 @@ class Lecture {
 				// Почему .toString? - Чтобы сравнить два массива в текстовом виде, не перебирая их.
 				if(lecture.schools.toString() == value.toString()) {
 					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					if(findSchools(value, 2)) {
 						if(!compareLectures(lecture)) {
 							lecture.schools = value;
 							console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+							return true;
 						}
+						return false;
 					}
+					return false;
 				}
 			}
 			else {
 				console.error('Lecture ' + name + 'doesn\'t have an argument ' + arg);
+				return false;
 			}
 		}
 		//syncEngine.edit('lectures', name);
 	}
 	/*
 	 * @param {string} name
+	 * @returns {boolean}
 	 */
 	del(name) {
 		console.log('Lecture.delete(' + name + ')');
-		for(let i = 0; i < lectures.length; i++) {
-			if(name == lectures[i].name) {
-				delete lectures[i];
-				console.info('Lecture ' + name + ' deleted');
-				break;
+		if(find(name, lectures)) {
+			for(let i = 0; i < lectures.length; i++) {
+				if(name == lectures[i].name) {
+					delete lectures[i];
+					console.info('Lecture ' + name + ' deleted');
+					break;
+				}
 			}
+			lectures = lectures.filter(function(a) { return a !== undefined; });
+			return true;
 		}
-		lectures = lectures.filter(function(a) { return a !== undefined; });
+		return false;
 		//syncEngine.del('lectures', name);
 	}
 	// За правильность названия нижеследующих методов не берусь. :)
@@ -680,15 +606,18 @@ class School {
 	/*
 	 * @param {string} name
 	 * @param {number} students
+	 * @returns {boolean}
 	 */
 	add(name, students) {
 		console.log('School.add(' + name + ', ' + students + ')');
 		if(find(name, schools)) {
 			console.info('School ' + name + ' is already exists');
+			return false;
 		}
 		else {
 			schools.push({"name": name, "students": students});
 			console.info('School ' + name + ' added, quantity of students: ' + students);
+			return true;
 		}
 		//syncEngine.add('school', name);
 	}
@@ -696,6 +625,7 @@ class School {
 	 * @param {string} name
 	 * @param {string} arg
 	 * @param {string} value
+	 * @returns {boolean}
 	 */
 	edit(name, arg, value) {
 		console.log('School.edit(' + name + ', ' + arg + ', ' + value + ')');
@@ -704,40 +634,50 @@ class School {
 			if(arg == 'name') {
 				if(find(value, schools)) {
 					console.info('School ' + value + ' is already exists');
+					return false;
 				}
 				else {
 					school.name = value;
 					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 				}
 			}
 			else if(arg == 'students') {
 				if(school.students == value) {
 					console.info('School ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					school.students = value;
 					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 				}
 			}
 			else {
 				console.error('School ' + name + 'doesn\'t have an argument ' + arg);
+				return false;
 			}
 		}
 		//syncEngine.edit('school', name);
 	}
 	/*
 	 * @param {string} name
+	 * @returns {boolean}
 	 */
 	del(name) {
 		console.log('School.del(' + name + ')');
-		for(let i = 0; i < schools.length; i++) {
-			if(name == schools[i].name) {
-				delete schools[i];
-				console.info('School ' + name + ' deleted');
-				break;
+		if(find(name, schools)) {
+			for(let i = 0; i < schools.length; i++) {
+				if(name == schools[i].name) {
+					delete schools[i];
+					console.info('School ' + name + ' deleted');
+					break;
+				}
 			}
+			schools = schools.filter(function(a) { return a !== undefined; });
+			return true;
 		}
-		schools = schools.filter(function(a) { return a !== undefined; });
+		return false;
 		//syncEngine.del('school', name);
 	}
 	/*
@@ -775,15 +715,18 @@ class Auditorium {
 	 * @param {string} name
 	 * @param {number} capacity
 	 * @param {string} location
+	 * @returns {boolean}
 	 */
 	add(name, capacity, location) {
 		console.log('Auditorium.add(' + name + ', ' + capacity + ', ' + location + ')');
 		if(find(name, auditoriums)) {
 			console.info('Auditorium ' + name + ' is already exists');
+			return false;
 		}
 		else {
 			auditoriums.push({"name": name, "capacity": capacity, "location": location});
 			console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
+			return true;
 		}
 		//syncEngine.add('auditoriums', name);
 	}
@@ -791,6 +734,7 @@ class Auditorium {
 	 * @param {string} name
 	 * @param {string} arg
 	 * @param {string} value
+	 * @returns {boolean}
 	 */
 	edit(name, arg, value) {
 		console.log('Auditorium.edit(' + name + ', ' + arg + ', ' + value + ')');
@@ -799,51 +743,63 @@ class Auditorium {
 			if(arg == 'name') {
 				if(find(value, auditoriums)) {
 					console.info('Auditorium ' + value + ' is already exists');
+					return false;
 				}
 				else {
 					auditorium.name = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 				}
 			}
 			else if(arg == 'capacity') {
 				if(auditorium.capacity == value) {
 					console.info('Auditorium ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					auditorium.capacity = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 					// sync.updateData('auditoriums');
 				}
 			}
 			else if(arg == 'location') {
 				if(auditorium.location == value) {
 					console.info('Auditorium ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
 				}
 				else {
 					auditorium.location = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					return true;
 					// sync.updateData('auditoriums');
 				}
 			}
 			else {
 				console.error('Auditorium ' + name + 'doesn\'t have an argument ' + arg);
+				return false;
 			}
 		}
 		//syncEngine.edit('auditoriums', name);
 	}
 	/*
 	 * @param {string} name
+	 * @returns {boolean}
 	 */
 	del(name) {
 		console.log('Auditorium.del(' + name + ')');
-		for(let i = 0; i < auditoriums.length; i++) {
-			if(name == auditoriums[i].name) {
-				delete auditoriums[i];
-				console.info('Auditorium ' + name + ' deleted');
-				break;
+		if(find(name, auditoriums)) {
+			for(let i = 0; i < auditoriums.length; i++) {
+				if(name == auditoriums[i].name) {
+					delete auditoriums[i];
+					console.info('Auditorium ' + name + ' deleted');
+					break;
+				}
 			}
+			auditoriums = auditoriums.filter(function(a) { return a !== undefined; });
+			return true;
 		}
-		auditoriums = auditoriums.filter(function(a) { return a !== undefined; });
+		return false;
 		//syncEngine.del('auditoriums', name);
 	}
 	/*
@@ -930,8 +886,6 @@ var auditorium = new Auditorium();
 // Примитивное тестирование библиотеки.
 function TestAPI(entryPoint) {
 	if(entryPoint == 'Teacher') {
-		// let teacher = new Teacher();
-
 		teacher.add('Терентьев');
 		teacher.add('Ожогов');
 		teacher.edit('Ожогов', 'Трофимов');
@@ -941,8 +895,6 @@ function TestAPI(entryPoint) {
 		teacher.get('Свободная');
 	}
 	else if(entryPoint == 'Lecture') {
-		// let lecture = new Lecture();
-
 		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', '15.07.2017 16:30-17:30', 'Школа мобильной разработки');
 		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', '16.07.2017 18:00-20:00', 'Школа менеджмента');
 		lecture.edit('Управление подразделениями', 'name', 'Управление персоналом');
@@ -951,8 +903,6 @@ function TestAPI(entryPoint) {
 		lecture.get('Управление персоналом');
 	}
 	else if(entryPoint == 'School') {
-		// let school = new School();
-
 		school.add('Школа обработки данных', 100);
 		school.add('Школа обработки информации', 25);
 		school.edit('Школа обработки данных', 'name', 'APEX');
@@ -962,8 +912,6 @@ function TestAPI(entryPoint) {
 		school.get('Школа разработки интерфейсов');
 	}
 	else if(entryPoint == 'Auditorium') {
-		// let auditorium = new Auditorium();
-
 		auditorium.add('Точка входа', 100, 'Google HQ');
 		auditorium.add('V8', 50, 'Google HQ');
 		auditorium.edit('V8', 'name', 'Мобилизация');
