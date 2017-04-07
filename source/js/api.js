@@ -2,9 +2,11 @@
 
 /*
  * ВСТУПЛЕНИЕ.
+ * ...
  */
 
-var teachers = [
+// Данные переменные являются значениями по умолчанию для демонстрации работы API.
+var TEACHERS = [
 	{
 		"name": "Трофимов"
 	},
@@ -16,45 +18,59 @@ var teachers = [
 	}
 ];
 
-var lectures = [
+var LECTURES = [
 	{
-		// "name": "Параллельные и распределенные вычисления",
-		"name": "один",
+		"name": "Параллельные и распределенные вычисления",
 		"teacher": "Яковлев",
 		"auditorium": "Синий Кит",
 		"time": {
 			"start": new Date(2017, 3, 1, 12, 0, 0),
 			"end": new Date(2017, 3, 1, 13, 30, 0)
 		},
-		"schools": ["Школа разработки интерфейсов", "Школа дизайна"]
+		"schools": ["Школа разработки интерфейсов", "Школа мобильной разработки"]
 	},
 	{
-		// "name": "Взаимодействие с сообществом",
-		"name": "два",
+		"name": "Организация мероприятий",
 		"teacher": "Цыплухин",
 		"auditorium": "Маркет",
 		"time": {
 			"start": new Date(2017, 3, 1, 12, 0, 0),
 			"end": new Date(2017, 3, 1, 13, 0, 0)
 		},
-		// "schools": ["Школа менеджмента", "Школа мобильного дизайна"]
 		"schools": ["Школа менеджмента"]
 	},
 	{
-		// "name": "Взаимодействие с сообществом",
-		"name": "три",
+		"name": "MVP&Co",
 		"teacher": "Трофимов",
 		"auditorium": "Синий Кит",
 		"time": {
-			"start": new Date(2017, 3, 1, 13, 0, 0),
-			"end": new Date(2017, 3, 1, 14, 0, 0)
+			"start": new Date(2017, 3, 1, 14, 0, 0),
+			"end": new Date(2017, 3, 1, 15, 0, 0)
 		},
-		// "schools": ["Школа менеджмента", "Школа мобильного дизайна"]
-		"schools": ["Школа мобильного дизайна"]
+		"schools": ["Школа мобильной разработки", "Школа мобильного дизайна"]
 	}
 ];
 
-var auditoriums = [
+var SCHOOLS = [
+	{
+		"name": "Школа менеджмента",
+		"students": 100
+	},
+	{
+		"name": "Школа разработки интерфейсов",
+		"students": 75
+	},
+	{
+		"name": "Школа мобильного дизайна",
+		"students": 25
+	},
+	{
+		"name": "Школа мобильной разработки",
+		"students": 50
+	}
+];
+
+var AUDITORIUMS = [
 	{
 		"name": "Синий Кит",
 		"capacity": 100,
@@ -74,25 +90,6 @@ var auditoriums = [
 		"name": "Маркет",
 		"capacity": 125,
 		"location": "Яндекс"
-	}
-];
-
-var schools = [
-	{
-		"name": "Школа менеджмента",
-		"students": 100
-	},
-	{
-		"name": "Школа разработки интерфейсов",
-		"students": 75
-	},
-	{
-		"name": "Школа мобильного дизайна",
-		"students": 25
-	},
-	{
-		"name": "Школа мобильной разработки",
-		"students": 50
 	}
 ];
 
@@ -124,7 +121,7 @@ function find(value, array, returnType) {
 
 	if(returnType) {
 		for(i = 0; i < array.length; i++) {
-			if(value == array[i].name) {
+			if(value.toLowerCase() == array[i].name.toLowerCase()) {
 				return array[i];
 			}
 		}
@@ -132,7 +129,7 @@ function find(value, array, returnType) {
 	}
 	else {
 		for(i = 0; i < array.length; i++) {
-			if(value == array[i].name) {
+			if(value.toLowerCase() == array[i].name.toLowerCase()) {
 				return true;
 			}
 		}
@@ -151,7 +148,7 @@ function findSchools(value, num) {
 
 	for(i = 0; i < value.length; i++) {
 		for(j = 0; j < schools.length; j++) {
-			if(value[i] == schools[j].name) {
+			if(value[i].toLowerCase() == schools[j].name.toLowerCase()) {
 				output.push(value[i]);
 			}
 		}
@@ -175,13 +172,13 @@ function exceedsCapacity(s_value, a_value) {
 
 	for(i = 0; i < s_value.length; i++) {
 		for(j = 0; j < schools.length; j++) {
-			if(s_value[i] == schools[j].name) {
+			if(s_value[i].toLowerCase() == schools[j].name.toLowerCase()) {
 				s_temp = s_temp + schools[j].students;
 			}
 		}
 	}
 	for(i = 0; i < auditoriums.length; i++) {
-		if(a_value == auditoriums[i].name) {
+		if(a_value.toLowerCase() == auditoriums[i].name.toLowerCase()) {
 			a_temp = auditoriums[i].capacity;
 		}
 	}
@@ -195,50 +192,37 @@ function exceedsCapacity(s_value, a_value) {
 }
 
 /*
- * Функция парсит входящую строку данных на 2 объекта с датой и возвращает их (объекты).
- * P.S. Пожалуйста, не стоит оценивать качество данной функции (и ломать ее, это ведь проще некуда). Вероятно, я успею ее переработать до того момента, когда вы на нее взглянете, но, как вы видите сейчас, она может обрабатывать только строго заданное значение DD.MM.YY(YY) HH:MM-HH:MM.
- * @param {string} value
- * @returns {Object.<Object, Object>}
+ * Функция парсит входящую строку данных на объект с датой и возвращает их (как объект).
+ * P.S. Пожалуйста, не стоит оценивать качество данной функции (и ломать ее, это ведь проще некуда). Вероятно, я успею ее переработать до того момента, когда вы на нее взглянете, но, как вы видите сейчас, она может обрабатывать только строго заданное значение.
+ * @param {string} value "DD.MM.YY(YY) HH:MM, DD.MM.YY(YY) HH:MM"
+ * @returns {Object.<Object, Object>|boolean}
  */
 function inputTime(value) {
-	let date, time, time_start, time_end, start, end;
+	let start, end, date_start, date_end;
 
-	value = value.split(' ');
-	date = value[0];
-	time = value[1];
+	value = value.split(', ');
 
-	date = date.split('.');
-	time = time.split('-');
-	time_start = time[0].split(':');
-	time_end = time[1].split(':');
+	date_start = value[0].split(' ');
+	date_end = value[1].split(' ');
 
-	start = new Date(date[2], date[1]-1, date[0], time_start[0], time_start[1], 0);
-	end = new Date(date[2], date[1]-1, date[0], time_end[0], time_end[1], 0);
+	date_start[0] = date_start[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2.$1.$3');
+	date_end[0] = date_end[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2.$1.$3');
 
-	if((end - start) === 0) {
-		return false;
-	}
-	else if((end - start) > 0) {
+	start = date_start[0] + ' ' + date_start[1];
+	end = date_end[0] + ' ' + date_end[1];
+
+	start = new Date(start);
+	end = new Date(end);
+
+	if((end - start) > 0) {
 		return {"start": start, "end": end};
 	}
-	else {
+	else if((end - start) < 0) {
 		return {"start": end, "end": start};
 	}
-}
-
-function inputdTime(value) {
-	let date, time, output;
-
-	value = value.split(' ');
-	date = value[0];
-	time = value[1];
-
-	date = date.split('.');
-	time = time.split(':');
-
-	output = new Date(date[2], date[1]-1, date[0], time[0], time[1], 0);
-
-	return output;
+	else {
+		return false;
+	}
 }
 
 /*
@@ -248,7 +232,20 @@ function inputdTime(value) {
  * @returns {boolean}
  */
 function compareTime(t1, t2) {
-	if((t1.start <= t2.start && t2.start <= t1.end) || (t2.start <= t1.end && t1.end <= t2.end)) {
+	// Столкнулся с такой особенностью, что если данные дергаются не из константных переменных (TEACHERS, LECTURES, и пр.), а из Local Storage (в данном случае (по факту косяк в JSON.stringify() и JSON.parse())), то время является не объектом Date, а строкой. Соответственно, сравнить их корректно не получится. В итоге был написан такой небольшой кусок кода, который решает данную проблему, пересоздавая объект из строки.
+	if(typeof t1.start == 'string') {
+		t1.start = new Date(t1.start);
+	}
+	else if(typeof t1.end == 'string') {
+		t1.end = new Date(t1.end);
+	}
+	else if(typeof t2.start == 'string') {
+		t2.start = new Date(t2.start);
+	}
+	else if(typeof t2.end == 'string') {
+		t2.end = new Date(t2.end);
+	}
+	if((t1.start <= t2.start && t2.start <= t1.end) || (t2.start <= t1.end && t1.end <= t2.end) || (t2.start <= t1.start && t1.start <= t2.end) || (t1.start <= t2.end && t2.end <= t1.end)) {
 		return true;
 	}
 	return false;
@@ -265,7 +262,7 @@ function compareSchools(s1, s2) {
 
 	for(i = 0; i < s1.length; i++) {
 		for(j = 0; j < s2.length; j++) {
-			if(s1[i] == s2[j]) {
+			if(s1[i].toLowerCase() == s2[j].toLowerCase()) {
 				return true;
 			}
 		}
@@ -279,18 +276,18 @@ function compareSchools(s1, s2) {
  * @returns {boolean}
  */
 function compareLectures(lecture) {
-	let i;
+	let i, id;
 
 	for(i = 0; i < lectures.length; i++) {
-		if(lecture.name == lectures[i].name) {
-			return true;
+		if(lecture.name.toLowerCase() == lectures[i].name.toLowerCase()) {
+			// return true;
 		}
 		else {
 			if(compareTime(lecture.time, lectures[i].time)) {
-				if(lecture.teacher == lectures[i].teacher) {
+				if(lecture.teacher.toLowerCase() == lectures[i].teacher.toLowerCase()) {
 					return true;
 				}
-				else if(lecture.auditorium == lectures[i].auditorium) {
+				else if(lecture.auditorium.toLowerCase() == lectures[i].auditorium.toLowerCase()) {
 					return true;
 				}
 				else if(compareSchools(lecture.schools, lectures[i].schools)) {
@@ -326,9 +323,10 @@ class Teacher {
 			// Если такой объект не существует, добавляем его.
 			teachers.push({"name": name});
 			console.info('Teacher ' + name + ' added');
+			// А также обновляем данные в локальном хранилище (для хранения и последующей отправке бэкэнду).
+			sync.updateData('teachers');
 			return true;
 		}
-		//syncEngine.add('teachers', name);
 	}
 	/*
 	 * Метод изменения объекта Teacher.
@@ -350,6 +348,7 @@ class Teacher {
 				let teacher = find(name, teachers, true);
 				teacher.name = value;
 				console.info('Teacher ' + name + ' edited to ' + value);
+				sync.updateData('teachers');
 				return true;
 			}
 		}
@@ -358,7 +357,6 @@ class Teacher {
 			console.error('Teacher ' + name + ' is not exists');
 			return false;
 		}
-		//syncEngine.edit('teachers', name);
 	}
 	/*
 	 * Метод удаления объекта Teacher.
@@ -371,7 +369,7 @@ class Teacher {
 			// Перебираем массив teachers
 			for(let i = 0; i < teachers.length; i++) {
 				// Проверяем, совпадает ли заданное значение со значениями объектов Teacher.
-				if(name == teachers[i].name) {
+				if(name.toLowerCase() == teachers[i].name.toLowerCase()) {
 					// Если существует такой объект, то удаляем его.
 					delete teachers[i];
 					// После delete teachers[i] в массиве teachers появляется значение undefined.
@@ -381,10 +379,37 @@ class Teacher {
 			}
 			// Фильтруем массив минуя значения undefined (которые появляются после delete teachers[i]).
 			teachers = teachers.filter(function(a) { return a !== undefined; });
+			sync.updateData('teachers');
 			return true;
 		}
 		return false;
-		//syncEngine.del('teachers', name);
+	}
+	// За правильность названия нижеследующих методов не берусь. :)
+	/*
+	 * Единственная особенность: временной интервал должен полностью охватывать время лекции, а не частично. Возможно, успею допилить до того, как вы взглянете.
+	 * @param {string} name
+	 * @param {Object|string} time (see function inputTime())
+	 * @returns {Array|boolean}
+	 */
+	search(name, time) {
+		console.log('Teacher.search(' + name + ', ' + time + ')');
+		if(find(name, teachers)) {
+			let output = [];
+
+			if(typeof time == 'string') {
+				time = inputTime(time);
+			}
+
+			for(let i = 0; i < lectures.length; i++) {
+				if(name.toLowerCase() == lectures[i].teacher.toLowerCase()) {
+					if(compareTime(time, lectures[i].time)) {
+						output.push(lectures[i]);
+					}
+				}
+			}
+			return output;
+		}
+		return false;
 	}
 	/*
 	 * Метод, возвращающий объект Teacher по заданному значению (если таковой имеется).
@@ -432,10 +457,8 @@ class Lecture {
 	 */
 	add(name, teacher, auditorium, time, input_schools) {
 		console.log('Lecture.add(' + name + ', ' + teacher + ', ' + auditorium + ', ' + time + ', ' + input_schools + ')');
-
 		// Разбираем строку школ на элементы массива.
 		input_schools = input_schools.split(', ');
-
 		// Ищем лекцию по названию, если существует, выводим соответствующее сообщение.
 		if(find(name, lectures)) {
 			console.error('Lecture ' + name + ' is already exists');
@@ -448,6 +471,7 @@ class Lecture {
 				if(!exceedsCapacity(findSchools(input_schools, 2), auditorium)) {
 					if(!compareLectures(lecture)) {
 						lectures.push(lecture);
+						sync.updateData('lectures');
 						return true;
 					}
 					else {
@@ -462,7 +486,6 @@ class Lecture {
 			}
 			return false;
 		}
-		//syncEngine.add('lectures', value);
 	}
 	/*
 	 * @param {string} name
@@ -474,6 +497,7 @@ class Lecture {
 		console.log('Lecture.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, lectures)) {
 			let lecture = find(name, lectures, true);
+			let temp_lecture = find(name, lectures, true);
 			/* Знаю, что конструкция немного громоздкая и можно было бы, например, реализовать через if(arg == 'name' || arg == 'teacher' || ...) : lecture[arg] = value ? return false;
 			Хотя, вероятно, подобное решение не сможет должным образом обрабатывать поступающие данные (это всего-лишь домыслы).
 			Возможно, я отрефакторю код до того момента, когда вы на него взглянете. */
@@ -485,6 +509,7 @@ class Lecture {
 				else {
 					lecture.name = value;
 					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('lectures');
 					return true;
 				}
 			}
@@ -494,11 +519,14 @@ class Lecture {
 					return false;
 				}
 				else {
-					if(!compareLectures(lecture)) {
+					temp_lecture.teacher = value;
+					if(!compareLectures(temp_lecture)) {
 						lecture.teacher = value;
 						console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+						sync.updateData('lectures');
 						return true;
 					}
+					return false;
 				}
 			}
 			else if(arg == 'auditorium') {
@@ -507,10 +535,12 @@ class Lecture {
 					return false;
 				}
 				else {
-					if(!exceedsCapacity(lecture.schools, 2)) {
-						if(!compareLectures(lecture)) {
+					if(!exceedsCapacity(lecture.schools, value)) {
+						temp_lecture.auditorium = value;
+						if(!compareLectures(temp_lecture)) {
 							lecture.auditorium = value;
 							console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+							sync.updateData('lectures');
 							return true;
 						}
 						return false;
@@ -518,18 +548,38 @@ class Lecture {
 					return false;
 				}
 			}
+			else if(arg == 'time') {
+				if(inputTime(value)) {
+					value = inputTime(value);
+					if((value.start == lecture.time.start) && (value.end == lecture.time.end)) {
+						console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+						return false;
+					}
+					else {
+						temp_lecture.time = value;
+						if(!compareLectures(temp_lecture)) {
+							lecture.time = value;
+							return true;
+						}
+						return false;
+					}
+				}
+				return false;
+			}
 			else if(arg == 'schools') {
 				value = value.split(', ');
-				// Почему .toString? - Чтобы сравнить два массива в текстовом виде, не перебирая их.
-				if(lecture.schools.toString() == value.toString()) {
+				// Почему .toString? - Чтобы сравнить два массива в текстовом виде, не перебирая их. Ведь нам тут важно сравнить, абсолютно ли они идентичны.
+				if(lecture.schools.toString().toLowerCase() == value.toString().toLowerCase()) {
 					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
 					return false;
 				}
 				else {
 					if(findSchools(value, 2)) {
-						if(!compareLectures(lecture)) {
+						temp_lecture.schools = value;
+						if(!compareLectures(temp_lecture)) {
 							lecture.schools = value;
 							console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+							sync.updateData('lectures');
 							return true;
 						}
 						return false;
@@ -542,7 +592,6 @@ class Lecture {
 				return false;
 			}
 		}
-		//syncEngine.edit('lectures', name);
 	}
 	/*
 	 * @param {string} name
@@ -552,27 +601,18 @@ class Lecture {
 		console.log('Lecture.delete(' + name + ')');
 		if(find(name, lectures)) {
 			for(let i = 0; i < lectures.length; i++) {
-				if(name == lectures[i].name) {
+				if(name.toLowerCase() == lectures[i].name.toLowerCase()) {
 					delete lectures[i];
 					console.info('Lecture ' + name + ' deleted');
 					break;
 				}
 			}
 			lectures = lectures.filter(function(a) { return a !== undefined; });
+			sync.updateData('lectures');
 			return true;
 		}
 		return false;
-		//syncEngine.del('lectures', name);
 	}
-	// За правильность названия нижеследующих методов не берусь. :)
-	/*
-	 * @param {string} name
-	 * @param {string} start
-	 * @param {string} end
-	 * @param {string} arg
-	 * @returns {Array|boolean}
-	 */
-	search(name, start, end, arg) {}
 	/*
 	 * @param {string} name
 	 * @returns {Object|boolean}
@@ -619,7 +659,7 @@ class School {
 			console.info('School ' + name + ' added, quantity of students: ' + students);
 			return true;
 		}
-		//syncEngine.add('school', name);
+			sync.updateData('schools');
 	}
 	/*
 	 * @param {string} name
@@ -639,6 +679,7 @@ class School {
 				else {
 					school.name = value;
 					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('schools');
 					return true;
 				}
 			}
@@ -650,6 +691,7 @@ class School {
 				else {
 					school.students = value;
 					console.info('School ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('schools');
 					return true;
 				}
 			}
@@ -658,7 +700,6 @@ class School {
 				return false;
 			}
 		}
-		//syncEngine.edit('school', name);
 	}
 	/*
 	 * @param {string} name
@@ -668,17 +709,44 @@ class School {
 		console.log('School.del(' + name + ')');
 		if(find(name, schools)) {
 			for(let i = 0; i < schools.length; i++) {
-				if(name == schools[i].name) {
+				if(name.toLowerCase() == schools[i].name.toLowerCase()) {
 					delete schools[i];
 					console.info('School ' + name + ' deleted');
 					break;
 				}
 			}
 			schools = schools.filter(function(a) { return a !== undefined; });
+			sync.updateData('schools');
 			return true;
 		}
 		return false;
-		//syncEngine.del('school', name);
+	}
+	/*
+	 * @param {string} name
+	 * @param {Object|string} time (see function inputTime())
+	 * @returns {Array|boolean}
+	 */
+	search(name, time) {
+		console.log('School.search(' + name + ', ' + time + ')');
+		if(find(name, schools)) {
+			let output = [];
+
+			if(typeof time == 'string') {
+				time = inputTime(time);
+			}
+
+			for(let i = 0; i < lectures.length; i++) {
+				for(let j = 0; j < lectures[i].schools.length; j++) {
+					if(name.toLowerCase() == lectures[i].schools[j].toLowerCase()) {
+						if(compareTime({"start": start, "end": end}, lectures[i].time)) {
+							output.push(lectures[i]);
+						}
+					}
+				}
+			}
+			return output;
+		}
+		return false;
 	}
 	/*
 	 * @param {string} name
@@ -728,7 +796,7 @@ class Auditorium {
 			console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
 			return true;
 		}
-		//syncEngine.add('auditoriums', name);
+			sync.updateData('auditoriums');
 	}
 	/*
 	 * @param {string} name
@@ -748,6 +816,7 @@ class Auditorium {
 				else {
 					auditorium.name = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('auditoriums');
 					return true;
 				}
 			}
@@ -759,20 +828,20 @@ class Auditorium {
 				else {
 					auditorium.capacity = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('auditoriums');
 					return true;
-					// sync.updateData('auditoriums');
 				}
 			}
 			else if(arg == 'location') {
-				if(auditorium.location == value) {
+				if(auditorium.location.toLowerCase() == value.toLowerCase()) {
 					console.info('Auditorium ' + name + ' in arg ' + arg + ' have ' + value);
 					return false;
 				}
 				else {
 					auditorium.location = value;
 					console.info('Auditorium ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('auditoriums');
 					return true;
-					// sync.updateData('auditoriums');
 				}
 			}
 			else {
@@ -780,7 +849,6 @@ class Auditorium {
 				return false;
 			}
 		}
-		//syncEngine.edit('auditoriums', name);
 	}
 	/*
 	 * @param {string} name
@@ -790,17 +858,42 @@ class Auditorium {
 		console.log('Auditorium.del(' + name + ')');
 		if(find(name, auditoriums)) {
 			for(let i = 0; i < auditoriums.length; i++) {
-				if(name == auditoriums[i].name) {
+				if(name.toLowerCase() == auditoriums[i].name.toLowerCase()) {
 					delete auditoriums[i];
 					console.info('Auditorium ' + name + ' deleted');
 					break;
 				}
 			}
 			auditoriums = auditoriums.filter(function(a) { return a !== undefined; });
+			sync.updateData('auditoriums');
 			return true;
 		}
 		return false;
-		//syncEngine.del('auditoriums', name);
+	}
+	/*
+	 * @param {string} name
+	 * @param {Object|string} time (see function inputTime())
+	 * @returns {Array|boolean}
+	 */
+	search(name, time) {
+		console.log('Auditorium.search(' + name + ', ' + time + ')');
+		if(find(name, auditoriums)) {
+			let output = [];
+
+			if(typeof time == 'string') {
+				time = inputTime(time);
+			}
+
+			for(let i = 0; i < lectures.length; i++) {
+				if(name.toLowerCase() == lectures[i].auditorium.toLowerCase()) {
+					if(compareTime(time, lectures[i].time)) {
+						output.push(lectures[i]);
+					}
+				}
+			}
+			return output;
+		}
+		return false;
 	}
 	/*
 	 * @param {string} name
@@ -808,6 +901,7 @@ class Auditorium {
 	 */
 	get(name) {
 		console.log('Auditorium.get(' + name + ')');
+
 		if(find(name, auditoriums)) {
 			console.log(find(name, auditoriums, true));
 			return find(name, auditoriums, true);
@@ -827,41 +921,54 @@ class Auditorium {
 	}
 }
 
-// Класс работы с LocalStorage API и синхронизация данных с backend'ом (в будущем).
-class storageManager {
+// Класс работы с Local Storage API и синхронизация данных с backend'ом (в будущем).
+class StorageManager {
 	constructor(type) {
 		this.type = type;
 	}
+	/*
+	 * Метод предназначен для получения данных из локального хранилища.
+	 * @param {string} type
+	 * @returns {Array.Object|boolean}
+	 */
 	getData(type) {
+		type = type.toLowerCase();
 		if(isLocalStorageAvailable()) {
 			if(type == 'teachers' || type == 'lectures' || type == 'schools' || type == 'auditoriums') {
-				return JSON.parse(localStorage.getItem(type));
-			}
-			else {
+				if(localStorage.getItem(type)) {
+					return JSON.parse(localStorage.getItem(type));
+				}
 				return false;
 			}
+			return false;
 		}
 	}
+	/*
+	 * Метод предназначен для обновления изменяемых данных в локальном хранилище.
+	 * @param {string} type
+	 * @returns {boolean}
+	 */
 	updateData(type) {
+		type = type.toLowerCase();
 		if(isLocalStorageAvailable()) {
-			if(type == 'teachers') {
+			if(type == 'teachers' || type == 'teacher') {
 				localStorage.setItem(type, JSON.stringify(teachers));
-				syncEngine.sendData(type);
+				sync.sendData(type);
 				return true;
 			}
-			else if(type == 'lectures') {
+			else if(type == 'lectures' || type == 'lecture') {
 				localStorage.setItem(type, JSON.stringify(lectures));
-				syncEngine.sendData(type);
+				sync.sendData(type);
 				return true;
 			}
-			else if(type == 'schools') {
+			else if(type == 'schools' || type == 'school') {
 				localStorage.setItem(type, JSON.stringify(schools));
-				syncEngine.sendData(type);
+				sync.sendData(type);
 				return true;
 			}
-			else if(type == 'auditoriums') {
+			else if(type == 'auditoriums' || type == 'auditorium') {
 				localStorage.setItem(type, JSON.stringify(auditoriums));
-				syncEngine.sendData(type);
+				sync.sendData(type);
 				return true;
 			}
 			else {
@@ -869,23 +976,32 @@ class storageManager {
 				return false;
 			}
 		}
-		else {
-			//
-		}
+		return false;
 	}
-	sendData(type, data) {}
+	/*
+	 * Данный метод предназначен для сбора и отправки данных из локального хранилища посредством XHR бэкэнду, который сохраняет данные в базе данных. Реализовать не проблемно, однако особой надобности не вижу, пока API доступно всем желающим (могут появиться нецензурные выражения в объектах, например).
+	 */
+	sendData(type) {}
 }
 
-var sync = new storageManager();
+var sync = new StorageManager();
 
-var teacher = new Teacher();
-var lecture = new Lecture();
-var school = new School();
-var auditorium = new Auditorium();
+var teachers = sync.getData('teachers') || TEACHERS,
+	lectures = sync.getData('lectures') || LECTURES,
+	schools = sync.getData('schools') || SCHOOLS,
+	auditoriums = sync.getData('auditoriums') || AUDITORIUMS;
+
+var teacher = new Teacher(),
+	lecture = new Lecture(),
+	school = new School(),
+	auditorium = new Auditorium();
 
 // Примитивное тестирование библиотеки.
 function TestAPI(entryPoint) {
-	if(entryPoint == 'Teacher') {
+	if(typeof entryPoint == 'string') {
+		entryPoint = entryPoint.toLowerCase();
+	}
+	if(entryPoint == 'teacher' || entryPoint == 1) {
 		teacher.add('Терентьев');
 		teacher.add('Ожогов');
 		teacher.edit('Ожогов', 'Трофимов');
@@ -894,15 +1010,15 @@ function TestAPI(entryPoint) {
 		teacher.get('Терентьев');
 		teacher.get('Свободная');
 	}
-	else if(entryPoint == 'Lecture') {
-		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', '15.07.2017 16:30-17:30', 'Школа мобильной разработки');
-		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', '16.07.2017 18:00-20:00', 'Школа менеджмента');
+	else if(entryPoint == 'lecture' || entryPoint == 2) {
+		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', '01.04.2017 16:30, 01.04.2017 17:30', 'Школа мобильной разработки');
+		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', '01.04.2017 17:00, 01.04.2017 18:00', 'Школа менеджмента');
 		lecture.edit('Управление подразделениями', 'name', 'Управление персоналом');
 		lecture.del('Параллельные вычисления');
 		lecture.get('Параллельные вычисления');
 		lecture.get('Управление персоналом');
 	}
-	else if(entryPoint == 'School') {
+	else if(entryPoint == 'school' || entryPoint == 3) {
 		school.add('Школа обработки данных', 100);
 		school.add('Школа обработки информации', 25);
 		school.edit('Школа обработки данных', 'name', 'APEX');
@@ -911,7 +1027,7 @@ function TestAPI(entryPoint) {
 		school.edit('APEX', 'students', 50);
 		school.get('Школа разработки интерфейсов');
 	}
-	else if(entryPoint == 'Auditorium') {
+	else if(entryPoint == 'auditorium' || entryPoint == 4) {
 		auditorium.add('Точка входа', 100, 'Google HQ');
 		auditorium.add('V8', 50, 'Google HQ');
 		auditorium.edit('V8', 'name', 'Мобилизация');

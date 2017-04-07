@@ -1,15 +1,194 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html>
 <head>
 	<meta charset="UTF-8">
-	<base href="/">
-	<title ng-bind="title">Вступительное задание #2</title>
-	<!-- <script src="/js/angular.js"></script> -->
-	<!-- <script src="/js/angular.route.js"></script> -->
-	<!-- <script src="/js/app.js"></script> -->
+	<title>Вступительное задание #2</title>
 	<script src="/js/api.js"></script>
 </head>
+<style>
+	body {
+		font-family: 'Roboto', sans-serif;
+	}
+
+	a {
+		color: #0066ff;
+		text-decoration: none;
+		opacity: 0.55;
+	}
+
+	a:hover {
+		border-bottom: 2px solid;
+		opacity: 0.9;
+	}
+
+	code {
+		background-color: rgba(0, 0, 0, 0.1);
+		border-radius: 4px;
+		padding: 2px 6px;
+	}
+
+	h1 span {
+		font-size: 18px;
+	}
+</style>
 <body>
-	<div class="app" ui-view></div>
+	<h1 id="academyapi">Academy API <span><a href="https://github.com/Tamik/entrance-task-2" title="Source on GitHub">GitHub</a></span></h1>
+	<p>Добро пожаловать на страницу тестирования <strong>Academy API</strong>.
+	<br>Данная библиотека была написана в качестве решения одной из задач поставленных компанией Яндекс.</p>
+	<h1 id="list">Список методов</h1>
+	<ul>
+		<li><code>Teacher</code> – класс, отвечающий за работу с учителями. Включает методы:
+			<ul>
+				<li><code>add(name)</code> – метод добавляет нового преподавателя;
+					<ul>
+						<li><code>name</code> – имя преподавателя.</li>
+					</ul>
+				</li>
+				<li><code>edit(name, value)</code> – метод изменяет имя заданного преподавателя;
+					<ul>
+						<li><code>name</code> – имя преподавателя;</li>
+						<li><code>value</code> – новое имя преподавателя.</li>
+					</ul>
+				</li>
+				<li><code>del(name)</code> – метод удаляет заданного преподавателя;
+					<ul>
+						<li><code>name</code> – имя преподавателя.</li>
+					</ul>
+				</li>
+				<li><code>search(name, time)</code> – метод осуществляет поиск лекций в заданном интервале, которые проводил преподаватель;
+					<ul>
+						<li><code>name</code> – имя преподавателя;</li>
+						<li><code>time</code> – временной интервал (например '01.04.2017 10:00, 01.04.2017 20:00').</li>
+					</ul>
+				</li>
+				<li><code>get(name)</code> – метод возвращает заданного преподавателя;
+					<ul>
+						<li><code>name</code> – имя преподавателя.</li>
+					</ul>
+				</li>
+				<li><code>getAll()</code> – метод возвращает всех существующих преподавателей.</li>
+			</ul>
+		</li>
+		<li><code>Lecture</code> – класс, отвечающий за работу с лекциями.
+			<ul>
+				<li><code>add(name, teacher, auditorium, time, schools)</code> – метод добавляет новую лекцию;
+					<ul>
+						<li><code>name</code> – название лекции;</li>
+						<li><code>teacher</code> – имя преподавателя, читающего лекцию;</li>
+						<li><code>auditorium</code> – аудитория, в которой будет проведена лекция;</li>
+						<li><code>time</code> – время (интервал, например '01.04.2017 13:00, 01.04.2017 15:00');</li>
+						<li><code>schools</code> – школы, для которых предназначена лекция.</li>
+					</ul>
+				</li>
+				<li><code>edit(name, arg, value)</code> – метод изменяет значение лекции;
+					<ul>
+						<li><code>name</code> – название лекции;</li>
+						<li><code>arg</code> – аргумент, который требуется изменить;</li>
+						<li><code>value</code> – новое значение.</li>
+					</ul>
+				</li>
+				<li><code>del(name)</code> – метод удаляет заданную лекцию;
+					<ul>
+						<li><code>name</code> – название лекции.</li>
+					</ul>
+				</li>
+				<li><code>get(name)</code> – метод возвращает данные заданную лекцию;
+					<ul>
+						<li><code>name</code> – название лекции.</li>
+					</ul>
+				</li>
+				<li><code>getAll()</code> – метод возвращает все существующие лекции.</li>
+			</ul>
+		</li>
+		<li><code>Auditorium</code> – класс, отвечающий за работу с аудиториями.
+			<ul>
+				<li><code>add(name, capacity, location)</code> – метод добавляет новую аудиторию;
+					<ul>
+						<li><code>name</code> – название аудитории;</li>
+						<li><code>capacity</code> – вместимость аудитории;</li>
+						<li><code>location</code> – местоположение.</li>
+					</ul>
+				</li>
+				<li><code>edit(name, arg, value)</code> – метод изменяет значение аудитории на новое.
+					<ul>
+						<li><code>name</code> – название аудитории;</li>
+						<li><code>arg</code> – аргумент, значение которого надо изменить;</li>
+						<li><code>value</code> – новое значение.</li>
+					</ul>
+				</li>
+				<li><code>del(name)</code> – метод удаляет заданную аудиторию;
+					<ul>
+						<li><code>name</code> – название аудитории.</li>
+					</ul>
+				</li>
+				<li><code>search(name, time)</code> – метод осуществляет поиск лекций в заданном интервале, в которой аудитории она проводилась;
+					<ul>
+						<li><code>name</code> – название аудитории;</li>
+						<li><code>time</code> – временной интервал (например '01.04.2017 10:00, 01.04.2017 20:00').</li>
+					</ul>
+				</li>
+				<li><code>get(name)</code> – метод возвращает заданную аудиторию;
+					<ul>
+						<li><code>name</code> – название аудитории.</li>
+					</ul>
+				</li>
+				<li><code>getAll()</code> – метод возвращает все существующие аудитории.</li>
+			</ul>
+		</li>
+		<li><code>School</code> – класс, отвечающий за работу со школами.
+			<ul>
+				<li><code>add(name, students)</code> – метод добавляет новую школу;
+					<ul>
+						<li><code>name</code> – название школы;</li>
+						<li><code>students</code> – количество студентов.</li>
+					</ul>
+				</li>
+				<li><code>edit(name, arg, value)</code> – метод изменяет значение школы на новое;
+					<ul>
+						<li><code>name</code> – название школы;</li>
+						<li><code>arg</code> – аргумент, который требуется изменить;</li>
+						<li><code>value</code> – новое значение.</li>
+					</ul>
+				</li>
+				<li><code>del(name)</code> – метод удаляет заданную школу;
+					<ul>
+						<li><code>name</code> – название школы.</li>
+					</ul>
+				</li>
+				<li><code>search(name, time)</code> – метод осуществляет поиск лекций в заданном интервале, в которых участвовала заданная школа;
+					<ul>
+						<li><code>name</code> – название школы;</li>
+						<li><code>time</code> – временной интервал (например '01.04.2017 10:00, 01.04.2017 20:00').</li>
+					</ul>
+				</li>
+				<li><code>get(name)</code> – метод возвращает заданную школу;
+					<ul>
+						<li><code>name</code> – название школы.</li>
+					</ul>
+				</li>
+				<li><code>getAll()</code> – метод возвращает все существующие школы.</li>
+			</ul>
+		</li>
+		<li><code>TestAPI()</code> – функция для тестирования библиотека (очень примитивная). Принимает значения:
+			<ul>
+				<li><code>teacher</code> или <code>1</code> – тестирование класса Teacher;</li>
+				<li><code>lecture</code> или <code>2</code> – тестирование класса Lecture;</li>
+				<li><code>school</code> или <code>3</code> – тестирование класса School;</li>
+				<li><code>auditorium</code> или <code>4</code> – тестирование класса Auditorium;</li>
+			</ul>
+		</li>
+	</ul>
+	<h1 id="usage">Использование</h1>
+	<p>Чтобы начать работу с данным API, в ознакомительных целях, откройте консоль вашего браузера. <br>Вам доступны следующие команды и возможности (примеры):</p>
+	<ul>
+		<li><code>teacher.search('Яковлев', '01.04.2017 10:00, 01.04.2017 16:00')</code></li>
+		<li><code>lecture.edit('Организация мероприятий', 'name', 'Управление персоналом')</code></li>
+		<li><code>auditorium.get('Вертикаль')</code></li>
+		<li><code>school.getAll()</code></li>
+		<li><code>TestAPI('lecture')</code> – примитивный тест для класса Lectures.</li>
+	</ul>
+	<h2 id="ps">P.S.</h2>
+	<p>Честно говоря, это мой первый опыт проектирования и реализации "полноценного" API. :)
+	<br>Поэтому прошу оставить мне фидбэк обо всех моих косяках, которые я допустил, чтобы я понимал, что я делаю не так, и начал делать как надо (лучше, эффективнее).</p>
 </body>
 </html>
