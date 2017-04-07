@@ -1,0 +1,27 @@
+{
+  "name": "entrance-task-2",
+  "version": "1.0.0",
+  "description": "Вступительное задание #2",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tamik/entrance-task-2.git"
+  },
+  "keywords": [
+    "yandex"
+  ],
+  "author": "Tamik Lokyaev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tamik/entrance-task-2/issues"
+  },
+  "homepage": "https://github.com/Tamik/entrance-task-2#readme",
+  "devDependencies": {
+    "browser-sync": "^2.18.8",
+    "gulp": "^3.9.1",
+    "gulp-cli": "^1.2.2"
+  }
+}
