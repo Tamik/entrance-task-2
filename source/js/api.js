@@ -99,7 +99,7 @@ var AUDITORIUMS = [
  */
 function isLocalStorageAvailable() {
 	try {
-		let storage = window.localStorage, x = 'Test';
+		var storage = window.localStorage, x = 'Test';
 		storage.setItem(x, x);
 		storage.removeItem(x);
 		return true;
@@ -117,8 +117,7 @@ function isLocalStorageAvailable() {
  * @returns {Object|boolean}
  */
 function find(value, array, returnType) {
-	let i;
-
+	var i;
 	if(returnType) {
 		for(i = 0; i < array.length; i++) {
 			if(value.toLowerCase() == array[i].name.toLowerCase()) {
@@ -144,8 +143,7 @@ function find(value, array, returnType) {
  * @returns {Array|boolean}
  */
 function findSchools(value, num) {
-	let i, j, output = [];
-
+	var i, j, output = [];
 	for(i = 0; i < value.length; i++) {
 		for(j = 0; j < schools.length; j++) {
 			if(value[i].toLowerCase() == schools[j].name.toLowerCase()) {
@@ -168,8 +166,8 @@ function findSchools(value, num) {
  * @returns {boolean}
  */
 function exceedsCapacity(s_value, a_value) {
-	let s_temp = 0, a_temp = 0, i, j;
-
+	var s_temp = 0, a_temp = 0, i, j;
+	// Считаем количество студентов заданных школ.
 	for(i = 0; i < s_value.length; i++) {
 		for(j = 0; j < schools.length; j++) {
 			if(s_value[i].toLowerCase() == schools[j].name.toLowerCase()) {
@@ -177,12 +175,13 @@ function exceedsCapacity(s_value, a_value) {
 			}
 		}
 	}
+	// Берем значение вместимости заданной аудитории.
 	for(i = 0; i < auditoriums.length; i++) {
 		if(a_value.toLowerCase() == auditoriums[i].name.toLowerCase()) {
 			a_temp = auditoriums[i].capacity;
 		}
 	}
-
+	// Сравниваем.
 	if(s_temp <= a_temp) {
 		return false;
 	}
@@ -198,22 +197,22 @@ function exceedsCapacity(s_value, a_value) {
  * @returns {Object.<Object, Object>|boolean}
  */
 function inputTime(value) {
-	let start, end, date_start, date_end;
-
+	var start, end, date_start, date_end;
+	// Разбираем строку на 2 даты.
 	value = value.split(', ');
-
+	// Разбираем первую и вторую дату.
 	date_start = value[0].split(' ');
 	date_end = value[1].split(' ');
-
-	date_start[0] = date_start[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2.$1.$3');
-	date_end[0] = date_end[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2.$1.$3');
-
+	// Переписываем дату в другой формат, чтобы все браузеры ее поняли.
+	date_start[0] = date_start[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2/$1/$3');
+	date_end[0] = date_end[0].replace(/(\d+)\.(\d+)\.(\d+)/, '$2/$1/$3');
+	// Собираем даты обратно в строку.
 	start = date_start[0] + ' ' + date_start[1];
 	end = date_end[0] + ' ' + date_end[1];
-
+	// Сериализуем в объект Date (дату).
 	start = new Date(start);
 	end = new Date(end);
-
+	// Отдаем.
 	if((end - start) > 0) {
 		return {"start": start, "end": end};
 	}
@@ -258,8 +257,7 @@ function compareTime(t1, t2) {
  * @returns {boolean}
  */
 function compareSchools(s1, s2) {
-	let i, j;
-
+	var i, j;
 	for(i = 0; i < s1.length; i++) {
 		for(j = 0; j < s2.length; j++) {
 			if(s1[i].toLowerCase() == s2[j].toLowerCase()) {
@@ -276,8 +274,7 @@ function compareSchools(s1, s2) {
  * @returns {boolean}
  */
 function compareLectures(lecture) {
-	let i, id;
-
+	var i;
 	for(i = 0; i < lectures.length; i++) {
 		if(lecture.name.toLowerCase() == lectures[i].name.toLowerCase()) {
 			// return true;
@@ -345,7 +342,7 @@ class Teacher {
 			}
 			else {
 				// Если заданное значение не пересекается с существующими объектами Teacher, то берем заданный объект на вооружение и изменяем его значение.
-				let teacher = find(name, teachers, true);
+				var teacher = find(name, teachers, true);
 				teacher.name = value;
 				console.info('Teacher ' + name + ' edited to ' + value);
 				sync.updateData('teachers');
@@ -367,7 +364,7 @@ class Teacher {
 		console.log('Teacher.delete(' + name + ')');
 		if(find(name, teachers)) {
 			// Перебираем массив teachers
-			for(let i = 0; i < teachers.length; i++) {
+			for(var i = 0; i < teachers.length; i++) {
 				// Проверяем, совпадает ли заданное значение со значениями объектов Teacher.
 				if(name.toLowerCase() == teachers[i].name.toLowerCase()) {
 					// Если существует такой объект, то удаляем его.
@@ -394,13 +391,11 @@ class Teacher {
 	search(name, time) {
 		console.log('Teacher.search(' + name + ', ' + time + ')');
 		if(find(name, teachers)) {
-			let output = [];
-
+			var output = [];
 			if(typeof time == 'string') {
 				time = inputTime(time);
 			}
-
-			for(let i = 0; i < lectures.length; i++) {
+			for(var i = 0; i < lectures.length; i++) {
 				if(name.toLowerCase() == lectures[i].teacher.toLowerCase()) {
 					if(compareTime(time, lectures[i].time)) {
 						output.push(lectures[i]);
@@ -416,10 +411,9 @@ class Teacher {
 	 * @param {string} name
 	 * @returns {Object|boolean}
 	 */
-	get(name) {
-		console.log('Teacher.get(' + name + ')');
+	_get(name) {
+		console.log('Teacher._get(' + name + ')');
 		if(find(name, teachers)) {
-			console.log(find(name, teachers, true));
 			return find(name, teachers, true);
 		}
 		else {
@@ -433,7 +427,6 @@ class Teacher {
 	 */
 	getAll() {
 		console.log('Teacher.getAll()');
-		console.log(teachers);
 		return teachers;
 	}
 }
@@ -465,8 +458,7 @@ class Lecture {
 			return false;
 		}
 		else {
-			let lecture = {"name": name, "teacher": teacher, "auditorium": auditorium, "time": inputTime(time), "schools": findSchools(input_schools, 2)};
-
+			var lecture = {"name": name, "teacher": teacher, "auditorium": auditorium, "time": inputTime(time), "schools": findSchools(input_schools, 2)};
 			if(findSchools(input_schools, 2)) {
 				if(!exceedsCapacity(findSchools(input_schools, 2), auditorium)) {
 					if(!compareLectures(lecture)) {
@@ -496,8 +488,8 @@ class Lecture {
 	edit(name, arg, value) {
 		console.log('Lecture.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, lectures)) {
-			let lecture = find(name, lectures, true);
-			let temp_lecture = find(name, lectures, true);
+			var lecture = find(name, lectures, true);
+			var temp_lecture = find(name, lectures, true);
 			/* Знаю, что конструкция немного громоздкая и можно было бы, например, реализовать через if(arg == 'name' || arg == 'teacher' || ...) : lecture[arg] = value ? return false;
 			Хотя, вероятно, подобное решение не сможет должным образом обрабатывать поступающие данные (это всего-лишь домыслы).
 			Возможно, я отрефакторю код до того момента, когда вы на него взглянете. */
@@ -600,7 +592,7 @@ class Lecture {
 	del(name) {
 		console.log('Lecture.delete(' + name + ')');
 		if(find(name, lectures)) {
-			for(let i = 0; i < lectures.length; i++) {
+			for(var i = 0; i < lectures.length; i++) {
 				if(name.toLowerCase() == lectures[i].name.toLowerCase()) {
 					delete lectures[i];
 					console.info('Lecture ' + name + ' deleted');
@@ -614,13 +606,29 @@ class Lecture {
 		return false;
 	}
 	/*
+	 * @param {Object|string} time
+	 * @returns {Array}
+	 */
+	search(time) {
+		console.log('Lecture.search(' + time + ')');
+		var output = [];
+		if(typeof time == 'string') {
+			time = inputTime(time);
+		}
+		for(var i = 0; i < lectures.length; i++) {
+			if(compareTime(time, lectures[i].time)) {
+				output.push(lectures[i]);
+			}
+		}
+		return output;
+	}
+	/*
 	 * @param {string} name
 	 * @returns {Object|boolean}
 	 */
-	get(name) {
-		console.log('Lecture.get(' + name + ')');
+	_get(name) {
+		console.log('Lecture._get(' + name + ')');
 		if(find(name, lectures)) {
-			console.log(find(name, lectures, true));
 			return find(name, lectures, true);
 		}
 		else {
@@ -633,7 +641,6 @@ class Lecture {
 	 */
 	getAll() {
 		console.log('Lecture.getAll()');
-		console.log(lectures);
 		return lectures;
 	}
 }
@@ -657,9 +664,9 @@ class School {
 		else {
 			schools.push({"name": name, "students": students});
 			console.info('School ' + name + ' added, quantity of students: ' + students);
+			sync.updateData('schools');
 			return true;
 		}
-			sync.updateData('schools');
 	}
 	/*
 	 * @param {string} name
@@ -670,7 +677,7 @@ class School {
 	edit(name, arg, value) {
 		console.log('School.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, schools)) {
-			let school = find(name, schools, true);
+			var school = find(name, schools, true);
 			if(arg == 'name') {
 				if(find(value, schools)) {
 					console.info('School ' + value + ' is already exists');
@@ -708,7 +715,7 @@ class School {
 	del(name) {
 		console.log('School.del(' + name + ')');
 		if(find(name, schools)) {
-			for(let i = 0; i < schools.length; i++) {
+			for(var i = 0; i < schools.length; i++) {
 				if(name.toLowerCase() == schools[i].name.toLowerCase()) {
 					delete schools[i];
 					console.info('School ' + name + ' deleted');
@@ -729,16 +736,14 @@ class School {
 	search(name, time) {
 		console.log('School.search(' + name + ', ' + time + ')');
 		if(find(name, schools)) {
-			let output = [];
-
+			var output = [];
 			if(typeof time == 'string') {
 				time = inputTime(time);
 			}
-
-			for(let i = 0; i < lectures.length; i++) {
-				for(let j = 0; j < lectures[i].schools.length; j++) {
+			for(var i = 0; i < lectures.length; i++) {
+				for(var j = 0; j < lectures[i].schools.length; j++) {
 					if(name.toLowerCase() == lectures[i].schools[j].toLowerCase()) {
-						if(compareTime({"start": start, "end": end}, lectures[i].time)) {
+						if(compareTime(time, lectures[i].time)) {
 							output.push(lectures[i]);
 						}
 					}
@@ -752,10 +757,9 @@ class School {
 	 * @param {string} name
 	 * @returns {Object|boolean}
 	 */
-	get(name) {
-		console.log('School.get(' + name + ')');
+	_get(name) {
+		console.log('School._get(' + name + ')');
 		if(find(name, schools)) {
-			console.log(find(name, schools, true));
 			return find(name, schools, true);
 		}
 		else {
@@ -768,7 +772,6 @@ class School {
 	 */
 	getAll() {
 		console.log('School.getAll()');
-		console.log(schools);
 		return schools;
 	}
 }
@@ -794,9 +797,9 @@ class Auditorium {
 		else {
 			auditoriums.push({"name": name, "capacity": capacity, "location": location});
 			console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
+			sync.updateData('auditoriums');
 			return true;
 		}
-			sync.updateData('auditoriums');
 	}
 	/*
 	 * @param {string} name
@@ -807,7 +810,7 @@ class Auditorium {
 	edit(name, arg, value) {
 		console.log('Auditorium.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, auditoriums)) {
-			let auditorium = find(name, auditoriums, true);
+			var auditorium = find(name, auditoriums, true);
 			if(arg == 'name') {
 				if(find(value, auditoriums)) {
 					console.info('Auditorium ' + value + ' is already exists');
@@ -857,7 +860,7 @@ class Auditorium {
 	del(name) {
 		console.log('Auditorium.del(' + name + ')');
 		if(find(name, auditoriums)) {
-			for(let i = 0; i < auditoriums.length; i++) {
+			for(var i = 0; i < auditoriums.length; i++) {
 				if(name.toLowerCase() == auditoriums[i].name.toLowerCase()) {
 					delete auditoriums[i];
 					console.info('Auditorium ' + name + ' deleted');
@@ -878,13 +881,11 @@ class Auditorium {
 	search(name, time) {
 		console.log('Auditorium.search(' + name + ', ' + time + ')');
 		if(find(name, auditoriums)) {
-			let output = [];
-
+			var output = [];
 			if(typeof time == 'string') {
 				time = inputTime(time);
 			}
-
-			for(let i = 0; i < lectures.length; i++) {
+			for(var i = 0; i < lectures.length; i++) {
 				if(name.toLowerCase() == lectures[i].auditorium.toLowerCase()) {
 					if(compareTime(time, lectures[i].time)) {
 						output.push(lectures[i]);
@@ -899,11 +900,9 @@ class Auditorium {
 	 * @param {string} name
 	 * @returns {Object|boolean}
 	 */
-	get(name) {
-		console.log('Auditorium.get(' + name + ')');
-
+	_get(name) {
+		console.log('Auditorium._get(' + name + ')');
 		if(find(name, auditoriums)) {
-			console.log(find(name, auditoriums, true));
 			return find(name, auditoriums, true);
 		}
 		else {
@@ -916,7 +915,6 @@ class Auditorium {
 	 */
 	getAll() {
 		console.log('Auditorium.getAll()');
-		console.log(auditoriums);
 		return auditoriums;
 	}
 }
@@ -1046,4 +1044,3 @@ function TestAPI(entryPoint) {
 //TestAPI('Lecture');
 //TestAPI('School');
 //TestAPI('Auditorium');
-
