@@ -6,65 +6,84 @@
  */
 
 // Данные переменные являются значениями по умолчанию для демонстрации работы API.
-var TEACHERS = [
+var SPEAKERS = [
 	{
-		"name": "Трофимов"
+		"id": 1,
+		"name": "Трофимов",
+		"company": "Яндекс",
+		"photo": ""
 	},
 	{
-		"name": "Яковлев"
+		"id": 2,
+		"name": "Яковлев",
+		"company": "Яндекс",
+		"photo": ""
 	},
 	{
-		"name": "Цыплухин"
+		"id": 3,
+		"name": "Цыплухин",
+		"company": "Комитет",
+		"photo": ""
 	}
 ];
 
 var LECTURES = [
 	{
+		"id": 1,
 		"name": "Параллельные и распределенные вычисления",
-		"teacher": "Яковлев",
+		"speaker": "Яковлев",
 		"auditorium": "Синий Кит",
 		"time": {
 			"start": new Date(2017, 3, 1, 12, 0, 0),
 			"end": new Date(2017, 3, 1, 13, 30, 0)
 		},
-		"schools": ["Школа разработки интерфейсов", "Школа мобильной разработки"]
+		"schools": ["Школа разработки интерфейсов", "Школа мобильной разработки"],
+		"link": ""
 	},
 	{
+		"id": 2,
 		"name": "Организация мероприятий",
-		"teacher": "Цыплухин",
+		"speaker": "Цыплухин",
 		"auditorium": "Маркет",
 		"time": {
 			"start": new Date(2017, 3, 1, 12, 0, 0),
 			"end": new Date(2017, 3, 1, 13, 0, 0)
 		},
-		"schools": ["Школа менеджмента"]
+		"schools": ["Школа менеджмента"],
+		"link": ""
 	},
 	{
+		"id": 3,
 		"name": "MVP&Co",
-		"teacher": "Трофимов",
+		"speaker": "Трофимов",
 		"auditorium": "Синий Кит",
 		"time": {
 			"start": new Date(2017, 3, 1, 14, 0, 0),
 			"end": new Date(2017, 3, 1, 15, 0, 0)
 		},
-		"schools": ["Школа мобильной разработки", "Школа мобильного дизайна"]
+		"schools": ["Школа мобильной разработки", "Школа мобильного дизайна"],
+		"link": ""
 	}
 ];
 
 var SCHOOLS = [
 	{
+		"id": 1,
 		"name": "Школа менеджмента",
 		"students": 100
 	},
 	{
+		"id": 2,
 		"name": "Школа разработки интерфейсов",
 		"students": 75
 	},
 	{
+		"id": 3,
 		"name": "Школа мобильного дизайна",
 		"students": 25
 	},
 	{
+		"id": 4,
 		"name": "Школа мобильной разработки",
 		"students": 50
 	}
@@ -72,21 +91,25 @@ var SCHOOLS = [
 
 var AUDITORIUMS = [
 	{
+		"id": 1,
 		"name": "Синий Кит",
 		"capacity": 100,
 		"location": "Яндекс"
 	},
 	{
+		"id": 2,
 		"name": "Вертикаль",
 		"capacity": 75,
 		"location": "Яндекс"
 	},
 	{
+		"id": 3,
 		"name": "Мобилизация",
 		"capacity": 200,
 		"location": "Яндекс"
 	},
 	{
+		"id": 4,
 		"name": "Маркет",
 		"capacity": 125,
 		"location": "Яндекс"
@@ -194,7 +217,7 @@ function exceedsCapacity(s_value, a_value) {
  * Функция парсит входящую строку данных на объект с датой и возвращает их (как объект).
  * P.S. Пожалуйста, не стоит оценивать качество данной функции (и ломать ее, это ведь проще некуда). Вероятно, я успею ее переработать до того момента, когда вы на нее взглянете, но, как вы видите сейчас, она может обрабатывать только строго заданное значение.
  * @param {string} value "DD.MM.YY(YY) HH:MM, DD.MM.YY(YY) HH:MM"
- * @returns {Object.<Object, Object>|boolean}
+ * @returns {Object|boolean}
  */
 function inputTime(value) {
 	var start, end, date_start, date_end;
@@ -231,7 +254,7 @@ function inputTime(value) {
  * @returns {boolean}
  */
 function compareTime(t1, t2) {
-	// Столкнулся с такой особенностью, что если данные дергаются не из константных переменных (TEACHERS, LECTURES, и пр.), а из Local Storage (в данном случае (по факту косяк в JSON.stringify() и JSON.parse())), то время является не объектом Date, а строкой. Соответственно, сравнить их корректно не получится. В итоге был написан такой небольшой кусок кода, который решает данную проблему, пересоздавая объект из строки.
+	// Столкнулся с такой особенностью, что если данные дергаются не из константных переменных (SPEAKERS, LECTURES, и пр.), а из Local Storage (в данном случае (по факту косяк в JSON.stringify() и JSON.parse())), то время является не объектом Date, а строкой. Соответственно, сравнить их корректно не получится. В итоге был написан такой небольшой кусок кода, который решает данную проблему, пересоздавая объект из строки.
 	if(typeof t1.start == 'string') {
 		t1.start = new Date(t1.start);
 	}
@@ -251,9 +274,9 @@ function compareTime(t1, t2) {
 }
 
 /*
- * Функция проверяет, пересекаются ли 2 заданных объекта (l1.schools, l2.schools | школы) между собой.
- * @param {Object} s1
- * @param {Object} s2
+ * Функция проверяет, пересекаются ли 2 заданных массива (l1.schools, l2.schools) между собой.
+ * @param {Array} s1
+ * @param {Array} s2
  * @returns {boolean}
  */
 function compareSchools(s1, s2) {
@@ -281,7 +304,7 @@ function compareLectures(lecture) {
 		}
 		else {
 			if(compareTime(lecture.time, lectures[i].time)) {
-				if(lecture.teacher.toLowerCase() == lectures[i].teacher.toLowerCase()) {
+				if(lecture.speaker.toLowerCase() == lectures[i].speaker.toLowerCase()) {
 					return true;
 				}
 				else if(lecture.auditorium.toLowerCase() == lectures[i].auditorium.toLowerCase()) {
@@ -299,84 +322,118 @@ function compareLectures(lecture) {
 // Касаемо комментирования всего кода. Я лишь прокомментирую работу одного класса, остальные же останутся без комментариев (если они там не потребуются), потому что все они на одно лицо.
 
 // Класс, отвечающий за учителей. :)
-class Teacher {
-	constructor(name) {
+class Speaker {
+	constructor(name, company, photo) {
 		this.name = name;
+		this.company = company;
+		this.photo = photo;
 	}
 	/*
-	 * Метод добавления нового объекта Teacher.
+	 * Метод добавления нового объекта Speaker.
 	 * @param {string} name
+	 * @param {string} company
+	 * @param {string} photo
 	 * @returns {boolean}
 	 */
-	add(name) {
-		console.log('Teacher.add(' + name + ')');
+	add(name, company, photo) {
 		// Проверяем, существует ли такой объект.
-		if(find(name, teachers)) {
+		if(find(name, speakers)) {
 			// Если такой объект существует, то выводим соответствующее сообщение.
-			console.error('Teacher ' + name + ' is already exists');
+			console.error('Speaker ' + name + ' is already exists');
 			return false;
 		}
 		else {
 			// Если такой объект не существует, добавляем его.
-			teachers.push({"name": name});
-			console.info('Teacher ' + name + ' added');
+			speakers.push({"id": speakers.length, "name": name, "company": company, "photo": photo});
+			console.info('Speaker ' + name + ' added');
 			// А также обновляем данные в локальном хранилище (для хранения и последующей отправке бэкэнду).
-			sync.updateData('teachers');
+			sync.updateData('speakers');
 			return true;
 		}
 	}
 	/*
-	 * Метод изменения объекта Teacher.
+	 * Метод изменения объекта Speaker.
 	 * @param {string} name
+	 * @param {string} arg
 	 * @param {string} value
 	 * @returns {boolean}
 	 */
-	edit(name, value) {
-		console.log('Teacher.edit(' + name + ', ' + value + ')');
+	edit(name, arg, value) {
 		// Проверка, существует ли такой учитель.
-		if(find(name, teachers)) {
+		if(find(name, speakers)) {
 			// Проверка, существует ли такой учитель по значению value.
-			if(find(value, teachers)) {
-				console.error('Teacher ' + value + ' is already exists');
+			if(find(value, speakers)) {
+				console.error('Speaker ' + value + ' is already exists');
 				return false;
 			}
 			else {
-				// Если заданное значение не пересекается с существующими объектами Teacher, то берем заданный объект на вооружение и изменяем его значение.
-				var teacher = find(name, teachers, true);
-				teacher.name = value;
-				console.info('Teacher ' + name + ' edited to ' + value);
-				sync.updateData('teachers');
-				return true;
+				// Если заданное значение не пересекается с существующими объектами Speaker, то берем заданный объект на вооружение и изменяем его значение.
+				var speaker = find(name, speakers, true);
+				if(arg == 'name') {
+					if(find(value, speakers)) {
+						console.info('Speaker ' + value + ' is already exists');
+						return false;
+					}
+					else {
+						speaker.name = value;
+						console.info('Speaker ' + name + ' edited arg ' + arg + ': ' + value);
+						sync.updateData('speakers');
+						return true;
+					}
+				}
+				else if(arg == 'company') {
+					if(speaker.company == value) {
+						console.info('Speaker ' + name + ' in arg ' + arg + ' have ' + value);
+						return false;
+					}
+					else {
+						speaker.company = value;
+						console.info('Speaker ' + name + ' edited arg ' + arg + ': ' + value);
+						sync.updateData('speakers');
+						return true;
+					}
+				}
+				else if(arg == 'photo') {
+					if(speaker.photo == value) {
+						console.info('Speaker ' + name + ' in arg ' + arg + ' have ' + value);
+						return false;
+					}
+					else {
+						speaker.photo = value;
+						console.info('Speaker ' + name + ' edited arg ' + arg + ': ' + value);
+						sync.updateData('speakers');
+						return true;
+					}
+				}
 			}
 		}
 		else {
-			// Если подобного объекта Teacher не существует, выводим соответствующее сообщение.
-			console.error('Teacher ' + name + ' is not exists');
+			// Если подобного объекта Speaker не существует, выводим соответствующее сообщение.
+			console.error('Speaker ' + name + ' is not exists');
 			return false;
 		}
 	}
 	/*
-	 * Метод удаления объекта Teacher.
+	 * Метод удаления объекта Speaker.
 	 * @param {string} name
 	 * @returns {boolean}
 	 */
-	del(name) {
-		console.log('Teacher.delete(' + name + ')');
-		if(find(name, teachers)) {
-			// Перебираем массив teachers
-			for(var i = 0; i < teachers.length; i++) {
-				// Проверяем, совпадает ли заданное значение со значениями объектов Teacher.
-				if(name.toLowerCase() == teachers[i].name.toLowerCase()) {
+	remove(name) {
+		if(find(name, speakers)) {
+			// Перебираем массив speakers
+			for(var i = 0; i < speakers.length; i++) {
+				// Проверяем, совпадает ли заданное значение со значениями объектов Speaker.
+				if(name.toLowerCase() == speakers[i].name.toLowerCase()) {
 					// Если существует такой объект, то удаляем его.
-					delete teachers[i];
-					// После delete teachers[i] в массиве teachers появляется значение undefined.
-					console.info('Teacher ' + name + ' deleted');
+					delete speakers[i];
+					// После delete speakers[i] в массиве speakers появляется значение undefined.
+					console.info('Speaker ' + name + ' removed');
 					break;
 				}
 			}
-			// Фильтруем массив минуя значения undefined (которые появляются после delete teachers[i]).
-			teachers = teachers.filter(function(a) { return a !== undefined; });
-			sync.updateData('teachers');
+			// Фильтруем массив минуя значения undefined (которые появляются после delete speakers[i]).
+			speakers = speakers.filter(function(a) { return a !== undefined; });
+			sync.updateData('speakers');
 			return true;
 		}
 		return false;
@@ -385,18 +442,17 @@ class Teacher {
 	/*
 	 * Единственная особенность: временной интервал должен полностью охватывать время лекции, а не частично. Возможно, успею допилить до того, как вы взглянете.
 	 * @param {string} name
-	 * @param {Object|string} time (see function inputTime())
+	 * @param {Object|string} time (см. функцию inputTime())
 	 * @returns {Array|boolean}
 	 */
 	search(name, time) {
-		console.log('Teacher.search(' + name + ', ' + time + ')');
-		if(find(name, teachers)) {
+		if(find(name, speakers)) {
 			var output = [];
 			if(typeof time == 'string') {
 				time = inputTime(time);
 			}
 			for(var i = 0; i < lectures.length; i++) {
-				if(name.toLowerCase() == lectures[i].teacher.toLowerCase()) {
+				if(name.toLowerCase() == lectures[i].speaker.toLowerCase()) {
 					if(compareTime(time, lectures[i].time)) {
 						output.push(lectures[i]);
 					}
@@ -407,49 +463,46 @@ class Teacher {
 		return false;
 	}
 	/*
-	 * Метод, возвращающий объект Teacher по заданному значению (если таковой имеется).
+	 * Метод, возвращающий объект Speaker по заданному значению (если таковой имеется), если при вызове метода отсутствует аргумент, то метод возвращает все существующие объекты Speaker.
 	 * @param {string} name
-	 * @returns {Object|boolean}
+	 * @returns {Object|boolean|Array}
 	 */
-	_get(name) {
-		console.log('Teacher._get(' + name + ')');
-		if(find(name, teachers)) {
-			return find(name, teachers, true);
+	 _get(name) {
+		if(arguments.length === 1) {
+			if(find(name, speakers)) {
+				return find(name, speakers, true);
+			}
+			else {
+				console.error('Speaker ' + name + ' is not exists');
+				return false;
+			}
 		}
 		else {
-			console.error('Teacher ' + name + ' is not exists');
-			return false;
+			return speakers;
 		}
-	}
-	/*
-	 * Метод, который возвращает все существующие объекты Teacher.
-	 * @returns {Array.Object}
-	 */
-	getAll() {
-		console.log('Teacher.getAll()');
-		return teachers;
 	}
 }
 
 // Класс, отвечающий за лекции.
 class Lecture {
-	constructor(name, teacher, auditorium, time, input_schools) {
+	constructor(name, speaker, auditorium, time, input_schools, link) {
 		this.name = name;
-		this.teacher = teacher;
+		this.speaker = speaker;
 		this.auditorium = auditorium;
 		this.time = time;
 		this.input_schools = input_schools;
+		this.link = link;
 	}
 	/*
 	 * @param {string} name
-	 * @param {string} teacher
+	 * @param {string} speaker
 	 * @param {string} auditorium
 	 * @param {string} time
 	 * @param {string} input_schools
+	 * @param {string} link
 	 * @returns {boolean}
 	 */
-	add(name, teacher, auditorium, time, input_schools) {
-		console.log('Lecture.add(' + name + ', ' + teacher + ', ' + auditorium + ', ' + time + ', ' + input_schools + ')');
+	add(name, speaker, auditorium, time, input_schools, link) {
 		// Разбираем строку школ на элементы массива.
 		input_schools = input_schools.split(', ');
 		// Ищем лекцию по названию, если существует, выводим соответствующее сообщение.
@@ -458,7 +511,7 @@ class Lecture {
 			return false;
 		}
 		else {
-			var lecture = {"name": name, "teacher": teacher, "auditorium": auditorium, "time": inputTime(time), "schools": findSchools(input_schools, 2)};
+			var lecture = {"id": lectures.length, "name": name, "speaker": speaker, "auditorium": auditorium, "time": inputTime(time), "schools": findSchools(input_schools, 2), "link": link};
 			if(findSchools(input_schools, 2)) {
 				if(!exceedsCapacity(findSchools(input_schools, 2), auditorium)) {
 					if(!compareLectures(lecture)) {
@@ -467,7 +520,6 @@ class Lecture {
 						return true;
 					}
 					else {
-						console.error('ERROR.');
 						return false;
 					}
 				}
@@ -486,11 +538,10 @@ class Lecture {
 	 * @returns {boolean}
 	 */
 	edit(name, arg, value) {
-		console.log('Lecture.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, lectures)) {
 			var lecture = find(name, lectures, true);
 			var temp_lecture = find(name, lectures, true);
-			/* Знаю, что конструкция немного громоздкая и можно было бы, например, реализовать через if(arg == 'name' || arg == 'teacher' || ...) : lecture[arg] = value ? return false;
+			/* Знаю, что конструкция немного громоздкая и можно было бы, например, реализовать через if(arg == 'name' || arg == 'speaker' || ...) : lecture[arg] = value ? return false;
 			Хотя, вероятно, подобное решение не сможет должным образом обрабатывать поступающие данные (это всего-лишь домыслы).
 			Возможно, я отрефакторю код до того момента, когда вы на него взглянете. */
 			if(arg == 'name') {
@@ -505,15 +556,15 @@ class Lecture {
 					return true;
 				}
 			}
-			else if(arg == 'teacher') {
-				if(lecture.teacher == value) {
+			else if(arg == 'speaker') {
+				if(lecture.speaker == value) {
 					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
 					return false;
 				}
 				else {
-					temp_lecture.teacher = value;
+					temp_lecture.speaker = value;
 					if(!compareLectures(temp_lecture)) {
-						lecture.teacher = value;
+						lecture.speaker = value;
 						console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
 						sync.updateData('lectures');
 						return true;
@@ -579,6 +630,18 @@ class Lecture {
 					return false;
 				}
 			}
+			else if(arg == 'link') {
+				if(lecture.link == value) {
+					console.info('Lecture ' + name + ' in arg ' + arg + ' have ' + value);
+					return false;
+				}
+				else {
+					lecture.speaker = value;
+					console.info('Lecture ' + name + ' edited arg ' + arg + ': ' + value);
+					sync.updateData('lectures');
+					return true;
+				}
+			}
 			else {
 				console.error('Lecture ' + name + 'doesn\'t have an argument ' + arg);
 				return false;
@@ -589,13 +652,12 @@ class Lecture {
 	 * @param {string} name
 	 * @returns {boolean}
 	 */
-	del(name) {
-		console.log('Lecture.delete(' + name + ')');
+	remove(name) {
 		if(find(name, lectures)) {
 			for(var i = 0; i < lectures.length; i++) {
 				if(name.toLowerCase() == lectures[i].name.toLowerCase()) {
 					delete lectures[i];
-					console.info('Lecture ' + name + ' deleted');
+					console.info('Lecture ' + name + ' removed');
 					break;
 				}
 			}
@@ -606,11 +668,10 @@ class Lecture {
 		return false;
 	}
 	/*
-	 * @param {Object|string} time
+	 * @param {Object|string} time (см. функцию inputTime())
 	 * @returns {Array}
 	 */
 	search(time) {
-		console.log('Lecture.search(' + time + ')');
 		var output = [];
 		if(typeof time == 'string') {
 			time = inputTime(time);
@@ -624,24 +685,21 @@ class Lecture {
 	}
 	/*
 	 * @param {string} name
-	 * @returns {Object|boolean}
+	 * @returns {Object|boolean|Array}
 	 */
 	_get(name) {
-		console.log('Lecture._get(' + name + ')');
-		if(find(name, lectures)) {
-			return find(name, lectures, true);
+		if(arguments.length === 1) {
+			if(find(name, lectures)) {
+				return find(name, lectures, true);
+			}
+			else {
+				console.error('Lecture ' + name + ' is not exists');
+				return false;
+			}
 		}
 		else {
-			console.error('Lecture ' + name + ' is not exists');
-			return false;
+			return lectures;
 		}
-	}
-	/*
-	 * @returns {Array.Object}
-	 */
-	getAll() {
-		console.log('Lecture.getAll()');
-		return lectures;
 	}
 }
 
@@ -656,13 +714,12 @@ class School {
 	 * @returns {boolean}
 	 */
 	add(name, students) {
-		console.log('School.add(' + name + ', ' + students + ')');
 		if(find(name, schools)) {
 			console.info('School ' + name + ' is already exists');
 			return false;
 		}
 		else {
-			schools.push({"name": name, "students": students});
+			schools.push({"id": schools.length, "name": name, "students": students});
 			console.info('School ' + name + ' added, quantity of students: ' + students);
 			sync.updateData('schools');
 			return true;
@@ -712,13 +769,12 @@ class School {
 	 * @param {string} name
 	 * @returns {boolean}
 	 */
-	del(name) {
-		console.log('School.del(' + name + ')');
+	remove(name) {
 		if(find(name, schools)) {
 			for(var i = 0; i < schools.length; i++) {
 				if(name.toLowerCase() == schools[i].name.toLowerCase()) {
 					delete schools[i];
-					console.info('School ' + name + ' deleted');
+					console.info('School ' + name + ' removed');
 					break;
 				}
 			}
@@ -730,11 +786,10 @@ class School {
 	}
 	/*
 	 * @param {string} name
-	 * @param {Object|string} time (see function inputTime())
+	 * @param {Object|string} time (см. функцию inputTime())
 	 * @returns {Array|boolean}
 	 */
 	search(name, time) {
-		console.log('School.search(' + name + ', ' + time + ')');
 		if(find(name, schools)) {
 			var output = [];
 			if(typeof time == 'string') {
@@ -755,24 +810,21 @@ class School {
 	}
 	/*
 	 * @param {string} name
-	 * @returns {Object|boolean}
+	 * @returns {Object|boolean|Array}
 	 */
 	_get(name) {
-		console.log('School._get(' + name + ')');
-		if(find(name, schools)) {
-			return find(name, schools, true);
+		if(arguments.length === 1) {
+			if(find(name, schools)) {
+				return find(name, schools, true);
+			}
+			else {
+				console.error('School ' + name + ' is not exists');
+				return false;
+			}
 		}
 		else {
-			console.error('School ' + name + ' is not exists');
-			return false;
+			return schools;
 		}
-	}
-	/*
-	 * @returns {Array.Object}
-	 */
-	getAll() {
-		console.log('School.getAll()');
-		return schools;
 	}
 }
 
@@ -789,13 +841,12 @@ class Auditorium {
 	 * @returns {boolean}
 	 */
 	add(name, capacity, location) {
-		console.log('Auditorium.add(' + name + ', ' + capacity + ', ' + location + ')');
 		if(find(name, auditoriums)) {
 			console.info('Auditorium ' + name + ' is already exists');
 			return false;
 		}
 		else {
-			auditoriums.push({"name": name, "capacity": capacity, "location": location});
+			auditoriums.push({"id": auditoriums.length, "name": name, "capacity": capacity, "location": location});
 			console.info('Auditorium ' + name + ' added, capacity: ' + capacity);
 			sync.updateData('auditoriums');
 			return true;
@@ -808,7 +859,6 @@ class Auditorium {
 	 * @returns {boolean}
 	 */
 	edit(name, arg, value) {
-		console.log('Auditorium.edit(' + name + ', ' + arg + ', ' + value + ')');
 		if(find(name, auditoriums)) {
 			var auditorium = find(name, auditoriums, true);
 			if(arg == 'name') {
@@ -857,13 +907,12 @@ class Auditorium {
 	 * @param {string} name
 	 * @returns {boolean}
 	 */
-	del(name) {
-		console.log('Auditorium.del(' + name + ')');
+	remove(name) {
 		if(find(name, auditoriums)) {
 			for(var i = 0; i < auditoriums.length; i++) {
 				if(name.toLowerCase() == auditoriums[i].name.toLowerCase()) {
 					delete auditoriums[i];
-					console.info('Auditorium ' + name + ' deleted');
+					console.info('Auditorium ' + name + ' removed');
 					break;
 				}
 			}
@@ -875,11 +924,10 @@ class Auditorium {
 	}
 	/*
 	 * @param {string} name
-	 * @param {Object|string} time (see function inputTime())
+	 * @param {Object|string} time (см. функцию inputTime())
 	 * @returns {Array|boolean}
 	 */
 	search(name, time) {
-		console.log('Auditorium.search(' + name + ', ' + time + ')');
 		if(find(name, auditoriums)) {
 			var output = [];
 			if(typeof time == 'string') {
@@ -898,24 +946,21 @@ class Auditorium {
 	}
 	/*
 	 * @param {string} name
-	 * @returns {Object|boolean}
+	 * @returns {Object|boolean|Array}
 	 */
 	_get(name) {
-		console.log('Auditorium._get(' + name + ')');
-		if(find(name, auditoriums)) {
-			return find(name, auditoriums, true);
+		if(arguments.length === 1) {
+			if(find(name, auditoriums)) {
+				return find(name, auditoriums, true);
+			}
+			else {
+				console.error('Auditorium ' + name + ' is not exists');
+				return false;
+			}
 		}
 		else {
-			console.error('Auditorium ' + name + ' is not exists');
-			return false;
+			return auditoriums;
 		}
-	}
-	/*
-	 * @returns {Array.Object}
-	 */
-	getAll() {
-		console.log('Auditorium.getAll()');
-		return auditoriums;
 	}
 }
 
@@ -932,7 +977,7 @@ class StorageManager {
 	getData(type) {
 		type = type.toLowerCase();
 		if(isLocalStorageAvailable()) {
-			if(type == 'teachers' || type == 'lectures' || type == 'schools' || type == 'auditoriums') {
+			if(type == 'speakers' || type == 'lectures' || type == 'schools' || type == 'auditoriums') {
 				if(localStorage.getItem(type)) {
 					return JSON.parse(localStorage.getItem(type));
 				}
@@ -949,8 +994,8 @@ class StorageManager {
 	updateData(type) {
 		type = type.toLowerCase();
 		if(isLocalStorageAvailable()) {
-			if(type == 'teachers' || type == 'teacher') {
-				localStorage.setItem(type, JSON.stringify(teachers));
+			if(type == 'speakers' || type == 'speaker') {
+				localStorage.setItem(type, JSON.stringify(speakers));
 				sync.sendData(type);
 				return true;
 			}
@@ -984,12 +1029,12 @@ class StorageManager {
 
 var sync = new StorageManager();
 
-var teachers = sync.getData('teachers') || TEACHERS,
+var speakers = sync.getData('speakers') || SPEAKERS,
 	lectures = sync.getData('lectures') || LECTURES,
 	schools = sync.getData('schools') || SCHOOLS,
 	auditoriums = sync.getData('auditoriums') || AUDITORIUMS;
 
-var teacher = new Teacher(),
+var speaker = new Speaker(),
 	lecture = new Lecture(),
 	school = new School(),
 	auditorium = new Auditorium();
