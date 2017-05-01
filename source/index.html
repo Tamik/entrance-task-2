@@ -177,7 +177,7 @@
 		</li>
 		<li><code>TestAPI()</code> – функция для тестирования библиотека (очень примитивная). Принимает значения:
 			<ul>
-				<li><code>teacher</code> или <code>1</code> – тестирование класса Teacher;</li>
+				<li><code>speaker</code> или <code>1</code> – тестирование класса Speaker;</li>
 				<li><code>lecture</code> или <code>2</code> – тестирование класса Lecture;</li>
 				<li><code>school</code> или <code>3</code> – тестирование класса School;</li>
 				<li><code>auditorium</code> или <code>4</code> – тестирование класса Auditorium;</li>
@@ -187,11 +187,11 @@
 	<h1 id="usage">Использование</h1>
 	<p>Чтобы начать работу с данным API, в ознакомительных целях, откройте консоль вашего браузера. <br>Вам доступны следующие команды и возможности (примеры):</p>
 	<ul>
-		<li><code>teacher.search('Яковлев', '01.04.2017 10:00, 01.04.2017 16:00')</code></li>
+		<li><code>speaker.search('Яковлев', '01.04.2017 10:00, 01.04.2017 16:00')</code></li>
 		<li><code>lecture.edit('Организация мероприятий', 'name', 'Управление персоналом')</code></li>
-		<li><code>auditorium.get('Вертикаль')</code></li>
-		<li><code>school.getAll()</code></li>
-		<li><code>TestAPI('lecture')</code> – примитивный тест для класса Lectures.</li>
+		<li><code>auditorium._get('Вертикаль')</code></li>
+		<li><code>school._get()</code></li>
+		<li><code>TestAPI('lecture')</code> – примитивный тест для класса Lecture.</li>
 	</ul>
 	<h2 id="ps">P.S.</h2>
 	<p>Честно говоря, это мой первый опыт проектирования и реализации "полноценного" API. :)

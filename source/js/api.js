@@ -1044,48 +1044,52 @@ function TestAPI(entryPoint) {
 	if(typeof entryPoint == 'string') {
 		entryPoint = entryPoint.toLowerCase();
 	}
-	if(entryPoint == 'teacher' || entryPoint == 1) {
-		teacher.add('Терентьев');
-		teacher.add('Ожогов');
-		teacher.edit('Ожогов', 'Трофимов');
-		teacher.edit('Ожогов', 'Свободная');
-		teacher.del('Терентьев');
-		teacher.get('Терентьев');
-		teacher.get('Свободная');
+	if(entryPoint == 'speaker' || entryPoint == 'speakers' || entryPoint == 1) {
+		speaker.add('Терентьев', 'Google', '');
+		speaker.add('Ожогов', 'Яндекс', '');
+		speaker.edit('Ожогов', 'name', 'Трофимов');
+		speaker.edit('Ожогов', 'name', 'Свободная');
+		speaker.remove('Терентьев');
+		console.info(speaker._get('Терентьев'));
+		console.info(speaker._get('Свободная'));
+		console.info(speaker._get());
 	}
-	else if(entryPoint == 'lecture' || entryPoint == 2) {
-		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', '01.04.2017 16:30, 01.04.2017 17:30', 'Школа мобильной разработки');
-		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', '01.04.2017 17:00, 01.04.2017 18:00', 'Школа менеджмента');
+	else if(entryPoint == 'lecture' || entryPoint == 'lectures' || entryPoint == 2) {
+		lecture.add('Параллельные вычисления', 'Яковлев', 'Мобилизация', '01.04.2017 16:30, 01.04.2017 17:30', 'Школа мобильной разработки, Школа разработки интерфейсов', '');
+		lecture.add('Управление подразделениями', 'Свободная', 'Маркет', '01.04.2017 17:00, 01.04.2017 18:00', 'Школа менеджмента', '');
 		lecture.edit('Управление подразделениями', 'name', 'Управление персоналом');
-		lecture.del('Параллельные вычисления');
-		lecture.get('Параллельные вычисления');
-		lecture.get('Управление персоналом');
+		lecture.remove('Параллельные вычисления');
+		console.info(lecture._get('Параллельные вычисления'));
+		console.info(lecture._get('Управление персоналом'));
+		console.info(lecture._get());
 	}
-	else if(entryPoint == 'school' || entryPoint == 3) {
+	else if(entryPoint == 'school' || entryPoint == 'schools' || entryPoint == 3) {
 		school.add('Школа обработки данных', 100);
 		school.add('Школа обработки информации', 25);
 		school.edit('Школа обработки данных', 'name', 'APEX');
-		school.del('Школа обработки информации');
+		school.remove('Школа обработки информации');
 		school.edit('APEX', 'name', 'APEX');
 		school.edit('APEX', 'students', 50);
-		school.get('Школа разработки интерфейсов');
+		console.info(school._get('Школа разработки интерфейсов'));
+		console.info(school._get());
 	}
-	else if(entryPoint == 'auditorium' || entryPoint == 4) {
+	else if(entryPoint == 'auditorium' || entryPoint == 'auditoriums' || entryPoint == 4) {
 		auditorium.add('Точка входа', 100, 'Google HQ');
 		auditorium.add('V8', 50, 'Google HQ');
 		auditorium.edit('V8', 'name', 'Мобилизация');
 		auditorium.edit('V8', 'capacity', 100);
 		auditorium.edit('V8', 'location', 'Яндекс');
-		auditorium.del('Точка входа');
-		auditorium.get('Вертикаль');
-		auditorium.get('Точка входа');
+		auditorium.remove('Точка входа');
+		console.info(auditorium._get('Вертикаль'));
+		console.info(auditorium._get('Точка входа'));
+		console.info(auditorium._get());
 	}
 	else {
 		console.error('TestAPI: Invalid entryPoint value');
 	}
 }
 
-//TestAPI('Teacher');
+//TestAPI('Speaker');
 //TestAPI('Lecture');
 //TestAPI('School');
 //TestAPI('Auditorium');
